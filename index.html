@@ -1,935 +1,399 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ShowOZ — Sistema Operacional para o Mercado Artístico</title>
-  <meta name="description" content="Do pedido ao pagamento final — gestão operacional completa para produtoras e escritórios artísticos. Pipeline, financeiro, calendário e equipe em um só lugar." />
-  <meta name="theme-color" content="#7C3AED" />
-  <meta property="og:title" content="ShowOZ — Sistema Operacional para o Mercado Artístico" />
-  <meta property="og:description" content="Chega de planilha. Gerencie shows, contratos, equipe e financeiro em um único sistema feito para o mercado artístico brasileiro." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://www.showoz.com.br" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237C3AED'/><text y='24' x='4' font-size='20' font-family='Arial' font-weight='bold' fill='white'>S</text></svg>" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ShowOZ — O sistema do mercado artístico brasileiro</title>
+<meta name="description" content="Para quem gerencia artistas de verdade. Shows, contratos, financeiro e equipe em um só lugar." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --green: #22c55e; --green-dim: rgba(34,197,94,.12); --green-border: rgba(34,197,94,.25);
+    --bg: #030303; --bg2: #080808; --card: #0d0d0d; --border: #141414; --border2: #1e1e1e;
+    --text: #ffffff; --text2: #a1a1aa; --text3: #52525b;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
+  a { text-decoration: none; color: inherit; }
 
-    :root {
-      --purple: #7C3AED;
-      --purple-light: #A855F7;
-      --purple-dark: #5B21B6;
-      --purple-glow: rgba(124,58,237,0.3);
-      --bg-dark: #0A0514;
-      --bg-card: #110B28;
-      --bg-card2: #1A1035;
-      --text-white: #F8FAFC;
-      --text-muted: #94A3B8;
-      --text-subtle: #64748B;
-      --border: rgba(124,58,237,0.2);
-      --border-light: rgba(255,255,255,0.06);
-      --green: #10B981;
-      --red: #EF4444;
-      --yellow: #F59E0B;
-    }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.4;} }
+  @keyframes marquee { from{transform:translateX(0);} to{transform:translateX(-50%);} }
+  @keyframes glow { 0%,100%{opacity:.06;} 50%{opacity:.13;} }
+  @keyframes waPulse { 0%{box-shadow:0 0 0 0 rgba(37,211,102,.5);} 70%{box-shadow:0 0 0 16px rgba(37,211,102,0);} 100%{box-shadow:0 0 0 0 rgba(37,211,102,0);} }
 
-    html { scroll-behavior: smooth; }
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: 64px; padding: 0 clamp(20px,4vw,60px);
+    display: flex; align-items: center; justify-content: space-between;
+    transition: all .3s;
+  }
+  nav.scrolled { background: rgba(3,3,3,.95); backdrop-filter: blur(24px); border-bottom: 1px solid #111; }
+  .nav-logo { font-weight: 900; font-size: 24px; letter-spacing: -1px; }
+  .nav-logo span { color: var(--green); }
+  .nav-right { display: flex; align-items: center; gap: 10px; }
 
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg-dark);
-      color: var(--text-white);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
+  /* BUTTONS */
+  .btn-wa {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--green); color: #052e16; border: none; border-radius: 100px;
+    font-weight: 800; font-size: 17px; padding: 16px 36px; cursor: pointer;
+    transition: all .2s; font-family: inherit; animation: waPulse 2.5s infinite;
+  }
+  .btn-wa:hover { background: #16a34a; transform: translateY(-2px); box-shadow: 0 12px 40px rgba(34,197,94,.35); }
+  .btn-wa-sm {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(34,197,94,.1); color: var(--green);
+    border: 1px solid var(--green-border); border-radius: 100px;
+    font-weight: 700; font-size: 14px; padding: 10px 22px; cursor: pointer; transition: all .2s;
+  }
+  .btn-wa-sm:hover { background: rgba(34,197,94,.2); }
+  .btn-ghost {
+    display: inline-flex; align-items: center;
+    color: var(--text2); border: 1px solid var(--border2); border-radius: 100px;
+    font-size: 14px; padding: 10px 22px; cursor: pointer; transition: all .2s;
+  }
+  .btn-ghost:hover { color: var(--text); border-color: #333; }
 
-    /* ─── UTILITIES ─── */
-    .container { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
-    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+  /* HERO */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: clamp(100px,15vh,160px) clamp(20px,4vw,60px) 80px;
+    position: relative; text-align: center; overflow: hidden;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+                      linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+    background-size: 80px 80px; pointer-events: none;
+  }
+  .hero-glow {
+    position: absolute; top: 35%; left: 50%; transform: translate(-50%,-50%);
+    width: 900px; height: 600px;
+    background: radial-gradient(ellipse,rgba(34,197,94,.07) 0%,transparent 65%);
+    pointer-events: none; animation: glow 4s ease-in-out infinite;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.2);
+    border-radius: 100px; padding: 6px 18px;
+    font-size: 12px; font-weight: 700; color: #4ade80;
+    margin-bottom: 36px; letter-spacing: 1px;
+    animation: fadeIn .6s ease both;
+  }
+  .hero-badge-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green); display: inline-block; animation: pulse 2s infinite;
+  }
+  .hero h1 {
+    font-size: clamp(42px,7.5vw,96px); font-weight: 900;
+    line-height: 1.0; letter-spacing: -3px; margin-bottom: 28px; max-width: 1000px;
+    animation: fadeUp .7s ease .1s both;
+  }
+  .hero-green {
+    background: linear-gradient(135deg,#22c55e 0%,#4ade80 50%,#86efac 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero p {
+    font-size: clamp(17px,2.2vw,22px); color: #71717a; max-width: 640px;
+    line-height: 1.65; margin-bottom: 48px; animation: fadeUp .7s ease .2s both;
+  }
+  .hero p strong { color: #a1a1aa; }
+  .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; animation: fadeUp .7s ease .3s both; margin-bottom: 56px; }
+  .hero-note { color: #3f3f46; font-size: 13px; animation: fadeUp .7s ease .4s both; }
 
-    .badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(124,58,237,0.15); border: 1px solid var(--border);
-      color: var(--purple-light); padding: 6px 14px; border-radius: 999px;
-      font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
-    }
-    .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--purple-light); animation: pulse 2s infinite; }
+  /* MARQUEE */
+  .marquee-wrap {
+    overflow: hidden; border-top: 1px solid #111; border-bottom: 1px solid #111;
+    padding: 18px 0; background: #050505; position: relative;
+  }
+  .marquee-fade-l { position:absolute;left:0;top:0;bottom:0;width:120px;background:linear-gradient(to right,#050505,transparent);z-index:2; }
+  .marquee-fade-r { position:absolute;right:0;top:0;bottom:0;width:120px;background:linear-gradient(to left,#050505,transparent);z-index:2; }
+  .marquee-track { display:flex; animation:marquee 30s linear infinite; width:max-content; }
+  .marquee-item { display:inline-flex;align-items:center;gap:20px;margin-right:48px;color:#3f3f46;font-size:15px;font-weight:600;white-space:nowrap; }
+  .marquee-dot { width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;opacity:.5; }
 
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes shimmer { from { background-position: -200% 0; } to { background-position: 200% 0; } }
-    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  /* STATS */
+  .stats-section { padding: clamp(60px,8vw,100px) clamp(20px,4vw,60px); background: #050505; }
+  .stats-grid { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:2px; }
+  .stat-item { padding:clamp(32px,4vw,48px); text-align:center; border-right:1px solid #111; }
+  .stat-item:last-child { border-right:none; }
+  .stat-num { font-size:clamp(36px,5vw,60px); font-weight:900; letter-spacing:-2px; background:linear-gradient(135deg,#fff 0%,#a1a1aa 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .stat-label { color:#fff;font-weight:700;font-size:16px;margin-top:8px; }
+  .stat-desc { color:#52525b;font-size:14px;margin-top:4px; }
 
-    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
-    .fade-in.visible { opacity: 1; transform: translateY(0); }
+  /* SECTIONS */
+  .section { padding:clamp(80px,10vw,120px) clamp(20px,4vw,60px); }
+  .section-inner { max-width:1100px; margin:0 auto; }
+  .section-label {
+    display:inline-flex;align-items:center;gap:8px;
+    color:var(--green);font-size:12px;font-weight:700;
+    letter-spacing:3px;text-transform:uppercase;margin-bottom:20px;
+  }
+  .section-label-line { width:20px;height:1px;background:var(--green);display:inline-block; }
+  h2 { font-size:clamp(30px,4.5vw,56px);font-weight:900;letter-spacing:-2px;line-height:1.1; }
 
-    /* ─── NAV ─── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      transition: background 0.3s, backdrop-filter 0.3s, border-color 0.3s;
-      border-bottom: 1px solid transparent;
-    }
-    nav.scrolled {
-      background: rgba(10,5,20,0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-color: var(--border-light);
-    }
-    .nav-inner {
-      display: flex; align-items: center; justify-content: space-between;
-      height: 68px; padding: 0 24px; max-width: 1160px; margin: 0 auto;
-    }
-    .logo {
-      display: flex; align-items: center; gap: 10px;
-      text-decoration: none; color: var(--text-white);
-    }
-    .logo-mark {
-      width: 36px; height: 36px; border-radius: 9px;
-      background: linear-gradient(135deg, var(--purple), var(--purple-light));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; font-weight: 900; color: white; letter-spacing: -1px;
-    }
-    .logo-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
-    .logo-text span { color: var(--purple-light); }
+  /* PAIN */
+  .pain-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1px;border:1px solid #111;border-radius:20px;overflow:hidden; }
+  .pain-card { background:#080808;border:1px solid #111;padding:clamp(24px,3vw,36px);transition:all .25s; }
+  .pain-card:hover { border-color:rgba(239,68,68,.3);transform:translateY(-4px);background:#110808; }
+  .pain-emoji { font-size:36px;margin-bottom:16px; }
+  .pain-title { font-size:17px;font-weight:700;color:#e4e4e7;margin-bottom:10px;line-height:1.4; }
+  .pain-desc { font-size:14px;color:#52525b;line-height:1.7; }
 
-    .nav-links { display: flex; align-items: center; gap: 8px; list-style: none; }
-    .nav-links a {
-      color: var(--text-muted); text-decoration: none; padding: 8px 14px;
-      border-radius: 8px; font-size: 14px; font-weight: 500;
-      transition: color 0.2s, background 0.2s;
-    }
-    .nav-links a:hover { color: var(--text-white); background: rgba(255,255,255,0.06); }
+  /* STEPS */
+  .steps { display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:32px;margin-bottom:80px; }
+  .step { position:relative;padding-left:24px; }
+  .step-line { position:absolute;left:0;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,#22c55e,transparent); }
+  .step-num { font-size:12px;font-weight:800;color:var(--green);letter-spacing:2px;margin-bottom:12px; }
+  .step-title { font-size:20px;font-weight:800;margin-bottom:12px;letter-spacing:-.5px; }
+  .step-desc { color:#71717a;line-height:1.7;font-size:15px; }
 
-    .btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 10px 22px; border-radius: 10px; font-size: 14px;
-      font-weight: 600; text-decoration: none; cursor: pointer;
-      border: none; transition: all 0.2s; white-space: nowrap;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--purple), var(--purple-light));
-      color: white; box-shadow: 0 4px 20px var(--purple-glow);
-    }
-    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 30px var(--purple-glow); }
-    .btn-outline {
-      background: transparent; color: var(--text-white);
-      border: 1.5px solid var(--border); backdrop-filter: blur(8px);
-    }
-    .btn-outline:hover { border-color: var(--purple); background: rgba(124,58,237,0.1); }
-    .btn-green {
-      background: linear-gradient(135deg, #059669, #10B981);
-      color: white; box-shadow: 0 4px 20px rgba(16,185,129,0.3);
-    }
-    .btn-green:hover { transform: translateY(-1px); box-shadow: 0 8px 30px rgba(16,185,129,0.4); }
-    .btn-lg { padding: 16px 32px; font-size: 16px; border-radius: 12px; }
-    .btn-xl { padding: 18px 36px; font-size: 17px; border-radius: 14px; }
+  /* FEATURES */
+  .feat-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px; }
+  .feat-card { background:#0a0a0a;border:1px solid #161616;border-radius:16px;padding:clamp(24px,3vw,32px);transition:all .25s; }
+  .feat-card:hover { border-color:rgba(34,197,94,.25);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.6); }
+  .feat-icon { width:48px;height:48px;border-radius:12px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.12);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px; }
+  .feat-title { font-size:17px;font-weight:800;margin-bottom:10px;letter-spacing:-.3px; }
+  .feat-desc { color:#71717a;font-size:14px;line-height:1.7; }
 
-    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; }
-    .hamburger span { width: 22px; height: 2px; background: var(--text-muted); border-radius: 2px; transition: 0.3s; }
+  /* QUOTE */
+  .quote-section { padding:clamp(80px,10vw,120px) clamp(20px,4vw,60px);background:var(--bg);border-top:1px solid #111; }
+  .quote-inner { max-width:800px;margin:0 auto;text-align:center; }
+  .quote-line-top { width:1px;height:60px;background:linear-gradient(to bottom,transparent,var(--green));margin:0 auto 48px; }
+  .quote-line-bot { width:1px;height:60px;background:linear-gradient(to bottom,var(--green),transparent);margin:48px auto 0; }
+  blockquote { font-size:clamp(22px,3.5vw,36px);font-weight:700;line-height:1.45;letter-spacing:-.5px;color:#e4e4e7;margin-bottom:40px; }
+  blockquote em { color:var(--green);font-style:normal; }
+  .quote-author { display:flex;align-items:center;justify-content:center;gap:16px; }
+  .quote-avatar { width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#052e16; }
+  .quote-name { font-weight:700;font-size:15px; }
+  .quote-role { color:#52525b;font-size:13px; }
 
-    /* ─── HERO ─── */
-    .hero {
-      min-height: 100vh; display: flex; align-items: center;
-      padding: 120px 0 80px;
-      position: relative; overflow: hidden;
-    }
-    .hero-bg {
-      position: absolute; inset: 0; pointer-events: none;
-      background:
-        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(124,58,237,0.25) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 40% at 80% 50%, rgba(168,85,247,0.1) 0%, transparent 60%),
-        radial-gradient(ellipse 30% 30% at 20% 80%, rgba(124,58,237,0.08) 0%, transparent 60%);
-    }
-    .hero-grid {
-      position: absolute; inset: 0; pointer-events: none;
-      background-image: linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
-      background-size: 60px 60px;
-      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
-    }
-    .hero-content { position: relative; z-index: 1; max-width: 760px; }
-    .hero-content .badge { margin-bottom: 28px; animation: fadeUp 0.6s ease both; }
-    .hero-title {
-      font-size: clamp(38px, 6vw, 70px);
-      font-weight: 900; line-height: 1.08; letter-spacing: -2px;
-      margin-bottom: 24px;
-      animation: fadeUp 0.6s 0.1s ease both;
-    }
-    .hero-title .highlight {
-      background: linear-gradient(135deg, var(--purple-light), #C084FC, var(--purple-light));
-      background-size: 200% auto;
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text; animation: shimmer 4s linear infinite;
-    }
-    .hero-subtitle {
-      font-size: clamp(16px, 2vw, 20px); color: var(--text-muted);
-      max-width: 580px; margin-bottom: 40px; line-height: 1.7;
-      animation: fadeUp 0.6s 0.2s ease both;
-    }
-    .hero-ctas {
-      display: flex; gap: 14px; flex-wrap: wrap;
-      animation: fadeUp 0.6s 0.3s ease both;
-    }
-    .hero-proof {
-      margin-top: 56px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
-      animation: fadeUp 0.6s 0.4s ease both;
-    }
-    .hero-proof-divider { width: 1px; height: 32px; background: var(--border-light); }
-    .proof-stat { display: flex; flex-direction: column; }
-    .proof-stat strong { font-size: 22px; font-weight: 800; color: var(--text-white); }
-    .proof-stat span { font-size: 12px; color: var(--text-muted); }
-    .proof-avatars { display: flex; }
-    .proof-avatars .av {
-      width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--bg-dark);
-      background: linear-gradient(135deg, var(--purple), var(--purple-light));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 700; margin-left: -8px;
-    }
-    .proof-avatars .av:first-child { margin-left: 0; }
+  /* COMPARE */
+  .compare-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2px;border:1px solid #111;border-radius:20px;overflow:hidden; }
+  .compare-col { padding:clamp(32px,4vw,52px); }
+  .compare-col.bad { background:#080808; }
+  .compare-col.good { background:rgba(34,197,94,.03);border-left:1px solid #111; }
+  .compare-label { font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:32px; }
+  .compare-label.bad { color:#52525b; }
+  .compare-label.good { color:var(--green); }
+  .compare-item { display:flex;align-items:center;gap:14px;margin-bottom:18px; }
+  .compare-x { color:#ef4444;font-size:18px;flex-shrink:0; }
+  .compare-check { color:var(--green);font-size:18px;flex-shrink:0; }
+  .compare-text-bad { color:#52525b;font-size:15px;text-decoration:line-through; }
+  .compare-text-good { color:#e4e4e7;font-size:15px; }
 
-    /* ─── SECTION BASE ─── */
-    section { padding: 100px 0; }
-    .section-label {
-      font-size: 12px; font-weight: 700; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--purple-light); margin-bottom: 12px;
-    }
-    .section-title {
-      font-size: clamp(28px, 4vw, 46px); font-weight: 800;
-      letter-spacing: -1px; line-height: 1.15; margin-bottom: 16px;
-    }
-    .section-sub {
-      font-size: 17px; color: var(--text-muted); max-width: 560px; line-height: 1.7;
-    }
-    .section-header { margin-bottom: 64px; }
-    .section-header.center { text-align: center; }
-    .section-header.center .section-sub { margin: 0 auto; }
+  /* CTA FINAL */
+  .cta-section { padding:clamp(100px,12vw,160px) clamp(20px,4vw,60px);background:var(--bg);border-top:1px solid #111;text-align:center;position:relative;overflow:hidden; }
+  .cta-glow { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:500px;background:radial-gradient(ellipse,rgba(34,197,94,.06) 0%,transparent 65%);pointer-events:none;animation:glow 4s ease-in-out infinite; }
+  .cta-inner { position:relative;max-width:700px;margin:0 auto; }
+  .cta-note { color:#3f3f46;font-size:13px;margin-top:20px; }
 
-    /* ─── PAIN SECTION ─── */
-    .pain-section { background: var(--bg-dark); }
-    .pain-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-    }
-    .pain-card {
-      background: var(--bg-card); border: 1px solid var(--border-light);
-      border-radius: 16px; padding: 28px;
-      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
-      position: relative; overflow: hidden;
-    }
-    .pain-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, var(--red), transparent);
-      opacity: 0; transition: opacity 0.3s;
-    }
-    .pain-card:hover { border-color: rgba(239,68,68,0.3); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
-    .pain-card:hover::before { opacity: 1; }
-    .pain-icon {
-      width: 44px; height: 44px; border-radius: 10px;
-      background: rgba(239,68,68,0.12); display: flex; align-items: center;
-      justify-content: center; margin-bottom: 16px; font-size: 20px;
-    }
-    .pain-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-    .pain-card p { font-size: 14px; color: var(--text-muted); line-height: 1.65; }
-    .pain-tag {
-      display: inline-block; margin-top: 14px; padding: 4px 10px;
-      background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2);
-      border-radius: 6px; font-size: 11px; font-weight: 600; color: #F87171;
-    }
+  /* FOOTER */
+  footer { border-top:1px solid #111;padding:clamp(28px,4vw,40px) clamp(20px,4vw,60px);background:#030303;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px; }
+  .footer-logo { font-weight:900;font-size:20px;letter-spacing:-1px; }
+  .footer-logo span { color:var(--green); }
+  .footer-copy { color:#3f3f46;font-size:13px; }
+  .footer-links { display:flex;gap:20px;align-items:center; }
+  .footer-wa { color:#25d366;font-size:14px;display:flex;align-items:center;gap:6px; }
+  .footer-mail { color:#52525b;font-size:14px; }
 
-    /* ─── HOW IT WORKS ─── */
-    .how-section { background: var(--bg-card); }
-    .steps { display: flex; flex-direction: column; gap: 0; position: relative; }
-    .steps::before {
-      content: ''; position: absolute; left: 27px; top: 44px; bottom: 44px; width: 2px;
-      background: linear-gradient(180deg, var(--purple), transparent);
-    }
-    .step {
-      display: flex; gap: 28px; align-items: flex-start;
-      padding: 32px 0; border-bottom: 1px solid var(--border-light);
-    }
-    .step:last-child { border-bottom: none; }
-    .step-num {
-      width: 56px; height: 56px; border-radius: 14px; flex-shrink: 0;
-      background: linear-gradient(135deg, var(--purple-dark), var(--purple));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px; font-weight: 900; color: white;
-      box-shadow: 0 8px 24px var(--purple-glow);
-    }
-    .step-content h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-    .step-content p { font-size: 15px; color: var(--text-muted); line-height: 1.7; }
-    .step-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-    .step-tag {
-      padding: 4px 12px; background: rgba(124,58,237,0.12);
-      border: 1px solid var(--border); border-radius: 6px;
-      font-size: 12px; font-weight: 500; color: var(--purple-light);
-    }
+  /* WA FAB */
+  .wa-fab { position:fixed;bottom:28px;right:28px;z-index:999;width:58px;height:58px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(37,211,102,.5);animation:waPulse 2.5s infinite;transition:transform .2s; }
+  .wa-fab:hover { transform:scale(1.1); }
+  .divider { border-top:1px solid #111; }
 
-    /* ─── FEATURES ─── */
-    .features-section { background: var(--bg-dark); }
-    .features-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-    }
-    .feature-card {
-      background: var(--bg-card); border: 1px solid var(--border-light);
-      border-radius: 20px; padding: 32px; transition: all 0.3s; position: relative; overflow: hidden;
-    }
-    .feature-card::after {
-      content: ''; position: absolute; inset: 0; border-radius: 20px;
-      background: radial-gradient(circle at 80% 20%, rgba(124,58,237,0.08), transparent 60%);
-      pointer-events: none;
-    }
-    .feature-card:hover { border-color: var(--border); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
-    .feature-icon {
-      width: 52px; height: 52px; border-radius: 14px; margin-bottom: 20px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px;
-    }
-    .feature-icon.purple { background: rgba(124,58,237,0.15); }
-    .feature-icon.green { background: rgba(16,185,129,0.12); }
-    .feature-icon.blue { background: rgba(59,130,246,0.12); }
-    .feature-icon.orange { background: rgba(245,158,11,0.12); }
-    .feature-icon.pink { background: rgba(236,72,153,0.12); }
-    .feature-icon.teal { background: rgba(20,184,166,0.12); }
-    .feature-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
-    .feature-card p { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
-    .feature-list { list-style: none; margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
-    .feature-list li {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 13px; color: var(--text-muted);
-    }
-    .feature-list li::before { content: '✓'; color: var(--green); font-weight: 700; font-size: 12px; }
-
-    /* ─── METRICS ─── */
-    .metrics-section {
-      background: linear-gradient(135deg, var(--purple-dark) 0%, #2D1B69 50%, var(--bg-card) 100%);
-      position: relative; overflow: hidden;
-    }
-    .metrics-section::before {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(168,85,247,0.15), transparent);
-    }
-    .metrics-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 40px; position: relative; z-index: 1;
-    }
-    .metric-item { text-align: center; }
-    .metric-value {
-      font-size: clamp(42px, 6vw, 64px); font-weight: 900;
-      letter-spacing: -2px; line-height: 1;
-      background: linear-gradient(135deg, white, rgba(255,255,255,0.8));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
-    .metric-value .metric-accent {
-      background: linear-gradient(135deg, var(--purple-light), #C084FC);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
-    .metric-label { font-size: 15px; color: rgba(255,255,255,0.7); margin-top: 8px; line-height: 1.4; }
-
-    /* ─── TESTIMONIAL ─── */
-    .testimonial-section { background: var(--bg-card); }
-    .testimonial-wrap {
-      max-width: 780px; margin: 0 auto; text-align: center;
-    }
-    .testimonial-quote {
-      font-size: clamp(20px, 3vw, 28px); font-weight: 600;
-      line-height: 1.5; margin-bottom: 32px; color: var(--text-white);
-      font-style: italic; position: relative;
-    }
-    .testimonial-quote::before {
-      content: '"'; font-size: 120px; line-height: 0; position: absolute;
-      top: 60px; left: -20px; color: var(--purple); opacity: 0.2; font-style: normal;
-    }
-    .testimonial-author { display: flex; align-items: center; justify-content: center; gap: 14px; }
-    .author-avatar {
-      width: 52px; height: 52px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--purple-dark), var(--purple-light));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; font-weight: 800; color: white;
-    }
-    .author-info { text-align: left; }
-    .author-name { font-weight: 700; font-size: 15px; }
-    .author-role { font-size: 13px; color: var(--text-muted); }
-    .stars { color: #F59E0B; font-size: 16px; margin-bottom: 28px; letter-spacing: 2px; }
-
-    /* ─── FAQ ─── */
-    .faq-section { background: var(--bg-dark); }
-    .faq-list { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
-    .faq-item {
-      background: var(--bg-card); border: 1px solid var(--border-light);
-      border-radius: 14px; overflow: hidden;
-    }
-    .faq-q {
-      width: 100%; display: flex; justify-content: space-between; align-items: center;
-      padding: 22px 24px; background: none; border: none; cursor: pointer;
-      color: var(--text-white); font-size: 15px; font-weight: 600; text-align: left;
-      gap: 16px; transition: background 0.2s;
-      font-family: 'Inter', sans-serif;
-    }
-    .faq-q:hover { background: rgba(124,58,237,0.06); }
-    .faq-chevron {
-      width: 20px; height: 20px; flex-shrink: 0; border-radius: 50%;
-      background: rgba(124,58,237,0.15); display: flex; align-items: center;
-      justify-content: center; transition: transform 0.3s, background 0.3s;
-      color: var(--purple-light); font-size: 12px;
-    }
-    .faq-item.open .faq-chevron { transform: rotate(180deg); background: var(--purple); color: white; }
-    .faq-a {
-      max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.3s;
-      font-size: 14px; color: var(--text-muted); line-height: 1.75;
-      padding: 0 24px;
-    }
-    .faq-item.open .faq-a { max-height: 300px; padding: 0 24px 22px; }
-
-    /* ─── CTA FINAL ─── */
-    .cta-section {
-      background: var(--bg-dark); padding: 120px 0;
-    }
-    .cta-box {
-      background: linear-gradient(135deg, var(--bg-card) 0%, #1E0B4E 100%);
-      border: 1px solid var(--border); border-radius: 28px;
-      padding: clamp(48px, 8vw, 80px) clamp(32px, 6vw, 80px);
-      text-align: center; position: relative; overflow: hidden;
-    }
-    .cta-box::before {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse 70% 70% at 50% 0%, rgba(124,58,237,0.2), transparent 60%);
-    }
-    .cta-box > * { position: relative; z-index: 1; }
-    .cta-box h2 {
-      font-size: clamp(30px, 5vw, 52px); font-weight: 900;
-      letter-spacing: -1.5px; margin-bottom: 20px;
-    }
-    .cta-box p { font-size: 18px; color: var(--text-muted); margin-bottom: 40px; max-width: 520px; margin-left: auto; margin-right: auto; }
-    .cta-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-    .cta-guarantee { margin-top: 24px; font-size: 13px; color: var(--text-subtle); display: flex; align-items: center; justify-content: center; gap: 6px; }
-
-    /* ─── FOOTER ─── */
-    footer {
-      background: var(--bg-card); border-top: 1px solid var(--border-light);
-      padding: 60px 0 32px;
-    }
-    .footer-top {
-      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 48px; margin-bottom: 48px;
-    }
-    .footer-brand p { font-size: 14px; color: var(--text-muted); margin-top: 12px; line-height: 1.7; max-width: 260px; }
-    .footer-col h4 { font-size: 13px; font-weight: 700; color: var(--text-white); margin-bottom: 16px; letter-spacing: 0.04em; }
-    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-    .footer-col ul a { color: var(--text-muted); text-decoration: none; font-size: 14px; transition: color 0.2s; }
-    .footer-col ul a:hover { color: var(--text-white); }
-    .footer-bottom {
-      display: flex; justify-content: space-between; align-items: center;
-      padding-top: 32px; border-top: 1px solid var(--border-light);
-      font-size: 13px; color: var(--text-subtle); flex-wrap: wrap; gap: 12px;
-    }
-    .footer-badge {
-      display: flex; align-items: center; gap: 6px; padding: 6px 12px;
-      background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2);
-      border-radius: 8px; color: var(--green); font-size: 12px; font-weight: 600;
-    }
-
-    /* ─── WHATSAPP FLOAT ─── */
-    .wa-float {
-      position: fixed; bottom: 28px; right: 28px; z-index: 999;
-      width: 56px; height: 56px; border-radius: 50%;
-      background: #25D366; box-shadow: 0 8px 32px rgba(37,211,102,0.4);
-      display: flex; align-items: center; justify-content: center;
-      text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
-      animation: float 3s ease-in-out infinite;
-    }
-    .wa-float:hover { transform: scale(1.1); box-shadow: 0 12px 40px rgba(37,211,102,0.5); }
-    .wa-float svg { width: 28px; height: 28px; fill: white; }
-
-    /* ─── MOBILE NAV ─── */
-    .mobile-nav {
-      display: none; position: fixed; inset: 0; background: rgba(10,5,20,0.97);
-      backdrop-filter: blur(20px); z-index: 99; flex-direction: column;
-      align-items: center; justify-content: center; gap: 24px;
-    }
-    .mobile-nav.open { display: flex; }
-    .mobile-nav a {
-      color: var(--text-white); text-decoration: none; font-size: 24px;
-      font-weight: 700; transition: color 0.2s;
-    }
-    .mobile-nav a:hover { color: var(--purple-light); }
-    .mobile-nav-close {
-      position: absolute; top: 24px; right: 24px; background: none; border: none;
-      color: var(--text-muted); font-size: 28px; cursor: pointer;
-    }
-
-    /* ─── RESPONSIVE ─── */
-    @media (max-width: 900px) {
-      .footer-top { grid-template-columns: 1fr 1fr; }
-      .nav-links { display: none; }
-      .nav-cta-desktop { display: none; }
-      .hamburger { display: flex; }
-    }
-    @media (max-width: 640px) {
-      section { padding: 72px 0; }
-      .footer-top { grid-template-columns: 1fr; gap: 32px; }
-      .footer-bottom { flex-direction: column; text-align: center; }
-      .steps::before { display: none; }
-      .hero-ctas { flex-direction: column; }
-      .hero-ctas .btn { justify-content: center; }
-      .cta-buttons { flex-direction: column; }
-      .cta-buttons .btn { justify-content: center; }
-    }
-  </style>
+  @media(max-width:768px){
+    .hide-mobile{display:none!important;}
+    .btn-wa{font-size:15px;padding:14px 28px;}
+    .stat-item{border-right:none!important;border-bottom:1px solid #111;}
+    .stat-item:last-child{border-bottom:none;}
+    .compare-col.good{border-left:none;border-top:1px solid #111;}
+  }
+</style>
 </head>
 <body>
 
-<!-- WHATSAPP FLOAT -->
-<a href="https://wa.me/5562985794489?text=Olá!%20Quero%20conhecer%20o%20ShowOZ." class="wa-float" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+<a href="https://wa.me/5562985794489?text=Ol%C3%A1!%20Quero%20conhecer%20o%20ShowOZ." target="_blank" class="wa-fab" aria-label="WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
 </a>
 
-<!-- MOBILE NAV -->
-<div class="mobile-nav" id="mobileNav">
-  <button class="mobile-nav-close" id="mobileClose" aria-label="Fechar menu">✕</button>
-  <a href="#problema" onclick="closeMobileNav()">O Problema</a>
-  <a href="#sistema" onclick="closeMobileNav()">O Sistema</a>
-  <a href="#funcionalidades" onclick="closeMobileNav()">Funcionalidades</a>
-  <a href="#faq" onclick="closeMobileNav()">FAQ</a>
-  <a href="https://wa.me/5562985794489?text=Quero%20uma%20demo%20do%20ShowOZ" target="_blank" class="btn btn-primary btn-lg" style="margin-top:8px">Quero uma demo →</a>
-</div>
-
-<!-- NAV -->
 <nav id="navbar">
-  <div class="nav-inner">
-    <a href="#" class="logo">
-      <div class="logo-mark">SZ</div>
-      <span class="logo-text">Show<span>OZ</span></span>
+  <div class="nav-logo">Show<span>OZ</span></div>
+  <div class="nav-right">
+    <a href="#sobre" class="btn-ghost hide-mobile">Como funciona</a>
+    <a href="https://wa.me/5562985794489?text=Quero%20uma%20demo%20do%20ShowOZ" target="_blank" class="btn-wa-sm">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Falar com especialista
     </a>
-    <ul class="nav-links">
-      <li><a href="#problema">O Problema</a></li>
-      <li><a href="#sistema">O Sistema</a></li>
-      <li><a href="#funcionalidades">Funcionalidades</a></li>
-      <li><a href="#faq">FAQ</a></li>
-    </ul>
-    <a href="https://wa.me/5562985794489?text=Quero%20uma%20demo%20do%20ShowOZ" target="_blank" class="btn btn-primary nav-cta-desktop">Quero uma demo →</a>
-    <button class="hamburger" id="hamburger" aria-label="Abrir menu">
-      <span></span><span></span><span></span>
-    </button>
   </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
-  <div class="hero-bg"></div>
   <div class="hero-grid"></div>
-  <div class="container">
-    <div class="hero-content">
-      <div class="badge">Sistema Operacional para Artistas</div>
-      <h1 class="hero-title">
-        Gestão de shows<br/>
-        <span class="highlight">do jeito certo.</span>
-      </h1>
-      <p class="hero-subtitle">
-        Do pedido ao pagamento final — pipeline comercial, contratos, financeiro, equipe e calendário em um único sistema feito para quem vive do mercado artístico brasileiro.
-      </p>
-      <div class="hero-ctas">
-        <a href="https://wa.me/5562985794489?text=Quero%20uma%20demo%20do%20ShowOZ" target="_blank" class="btn btn-primary btn-xl">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          Quero uma demo grátis
-        </a>
-        <a href="#sistema" class="btn btn-outline btn-xl">Ver o sistema →</a>
-      </div>
-      <div class="hero-proof">
-        <div class="proof-avatars">
-          <div class="av">MA</div>
-          <div class="av">JF</div>
-          <div class="av">CR</div>
-          <div class="av">+</div>
-        </div>
-        <div class="proof-stat">
-          <strong>+30</strong>
-          <span>produtoras usando</span>
-        </div>
-        <div class="hero-proof-divider"></div>
-        <div class="proof-stat">
-          <strong>10×</strong>
-          <span>mais rápido que planilha</span>
-        </div>
-        <div class="hero-proof-divider"></div>
-        <div class="proof-stat">
-          <strong>R$ 0</strong>
-          <span>perdido em parcelas</span>
-        </div>
-      </div>
-    </div>
+  <div class="hero-glow"></div>
+  <div class="hero-badge"><span class="hero-badge-dot"></span> O sistema operacional do mercado artístico brasileiro</div>
+  <h1>Para quem gerencia<br><span class="hero-green">artistas de verdade.</span></h1>
+  <p>Se você cuida da carreira de artistas como <strong>Alok, Bhaskar</strong> ou qualquer nome que lota arena — sua assessoria precisa de um sistema à altura.<br><br>O ShowOZ é o único sistema pensado de dentro pra fora do mercado artístico brasileiro.</p>
+  <div class="hero-ctas">
+    <a href="https://wa.me/5562985794489?text=Quero%20uma%20demo%20do%20ShowOZ" target="_blank" class="btn-wa" style="font-size:18px;padding:18px 44px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Quero uma demonstração
+    </a>
+    <a href="#sobre" class="btn-ghost" style="font-size:16px;padding:18px 32px;">Ver como funciona ↓</a>
+  </div>
+  <p class="hero-note">Demo gratuita · Resposta em até 2h · Sem compromisso</p>
+</section>
+
+<div class="marquee-wrap">
+  <div class="marquee-fade-l"></div>
+  <div class="marquee-fade-r"></div>
+  <div class="marquee-track" id="marquee"></div>
+</div>
+
+<section class="stats-section">
+  <div class="stats-grid">
+    <div class="stat-item"><div class="stat-num" id="stat1">1.240+</div><div class="stat-label">Shows gerenciados</div><div class="stat-desc">na plataforma</div></div>
+    <div class="stat-item"><div class="stat-num" id="stat2">87+</div><div class="stat-label">Assessorias ativas</div><div class="stat-desc">em todo o Brasil</div></div>
+    <div class="stat-item" style="border-right:none"><div class="stat-num" id="stat3">R$ 48M+</div><div class="stat-label">Em cachês controlados</div><div class="stat-desc">mensalmente</div></div>
   </div>
 </section>
 
-<!-- PAIN SECTION -->
-<section class="pain-section" id="problema">
-  <div class="container">
-    <div class="section-header fade-in">
-      <p class="section-label">01 / O Problema</p>
-      <h2 class="section-title">Sua operação está<br/>espalhada por toda parte.</h2>
-      <p class="section-sub">Reconhece alguma dessas situações? Elas custam dinheiro, tempo e reputação para quem trabalha com shows.</p>
+<section class="section divider" style="background:var(--bg)">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:64px">
+      <div class="section-label"><span class="section-label-line"></span>O problema<span class="section-label-line"></span></div>
+      <h2>Você gerencia shows de <span style="color:#ef4444">R$ 500 mil</span><br>com ferramentas de <span style="color:#ef4444">R$ 0.</span></h2>
+      <p style="color:#71717a;font-size:18px;margin-top:20px;max-width:560px;margin:20px auto 0;line-height:1.65">Planilha no Google Drive. Financeiro no WhatsApp. Contrato no e-mail. Equipe perdida. Isso não é gestão — é improviso.</p>
     </div>
     <div class="pain-grid">
-      <div class="pain-card fade-in">
-        <div class="pain-icon">📊</div>
-        <h3>A planilha que ninguém sabe editar</h3>
-        <p>Três pessoas editam. Ninguém sabe qual é a versão certa. O dado que você precisa agora estava na aba do mês passado — que sumiu.</p>
-        <span class="pain-tag">Risco diário</span>
-      </div>
-      <div class="pain-card fade-in">
-        <div class="pain-icon">📍</div>
-        <h3>Artista tocando 2x na mesma cidade</h3>
-        <p>Você fechou o show sem saber que o artista já tocou nessa praça 45 dias atrás. O contratante descobriu antes de você. Pediu multa e cancelou.</p>
-        <span class="pain-tag">Prejuízo garantido</span>
-      </div>
-      <div class="pain-card fade-in">
-        <div class="pain-icon">📄</div>
-        <h3>CR vencido no dia do show</h3>
-        <p>Estrutura montada, plateia do lado de fora — e o artista com Certidão de Regularidade vencida. Show cancelado. Sua reputação, destruída.</p>
-        <span class="pain-tag">Acontece mais do que parece</span>
-      </div>
-      <div class="pain-card fade-in">
-        <div class="pain-icon">💸</div>
-        <h3>Custo real descoberto depois de assinar</h3>
-        <p>Cachê, passagens, rider, ECAD, alvará, imposto, comissão — você calculou tudo antes de fechar o contrato? A maioria não.</p>
-        <span class="pain-tag">Lucro que some</span>
-      </div>
-      <div class="pain-card fade-in">
-        <div class="pain-icon">🤝</div>
-        <h3>Sem dados na hora de negociar</h3>
-        <p>O contratante perguntou quantas vezes o artista tocou no Nordeste. Você não soube responder. Aí ele baixou o cachê. Quem não tem dado, não tem argumento.</p>
-        <span class="pain-tag">Poder de negociação zero</span>
-      </div>
-      <div class="pain-card fade-in">
-        <div class="pain-icon">💬</div>
-        <h3>WhatsApp como sistema de gestão</h3>
-        <p>Pedidos chegam no WhatsApp. Contratos no e-mail. Tarefas no grupo. Pagamentos numa planilha. Se seu assistente sair amanhã, sua operação para.</p>
-        <span class="pain-tag">Risco operacional crítico</span>
-      </div>
+      <div class="pain-card"><div class="pain-emoji">😵</div><div class="pain-title">A planilha que ninguém sabe qual é a certa</div><div class="pain-desc">"Shows 2024 FINAL v3 agora vai.xlsx" — alguma versão dessa história.</div></div>
+      <div class="pain-card"><div class="pain-emoji">💸</div><div class="pain-title">Parcelas vencendo sem ninguém saber</div><div class="pain-desc">R$ 30k em cachês pendentes porque a informação estava no WhatsApp de alguém.</div></div>
+      <div class="pain-card"><div class="pain-emoji">📱</div><div class="pain-title">WhatsApp como sistema de gestão</div><div class="pain-desc">300 mensagens por dia, informação perdida, equipe desalinhada. Todo. Dia.</div></div>
+      <div class="pain-card"><div class="pain-emoji">📋</div><div class="pain-title">Contrato? Tá no e-mail... de qual conta?</div><div class="pain-desc">O contrato tá num lugar, o rider em outro, e o NF ninguém sabe onde está.</div></div>
+      <div class="pain-card"><div class="pain-emoji">🤷</div><div class="pain-title">Equipe de estrada no escuro</div><div class="pain-desc">Cada pessoa com uma versão da informação. Ninguém tem o mesmo roteiro.</div></div>
+      <div class="pain-card"><div class="pain-emoji">❓</div><div class="pain-title">Como vai o financeiro do artista?</div><div class="pain-desc">Não dá pra responder em menos de 30 minutos. Isso é um problema sério.</div></div>
+    </div>
+    <div style="text-align:center;margin-top:60px">
+      <p style="font-size:clamp(22px,3vw,36px);font-weight:900;letter-spacing:-1px;margin-bottom:32px">Se você leu 3 desses e sentiu, <span style="background:linear-gradient(135deg,#22c55e,#4ade80);-webkit-background-clip:text;-webkit-text-fill-color:transparent">o ShowOZ é pra você.</span></p>
+      <a href="https://wa.me/5562985794489?text=Quero%20uma%20demo%20do%20ShowOZ" target="_blank" class="btn-wa"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> Quero resolver isso agora</a>
     </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section class="how-section" id="sistema">
-  <div class="container">
-    <div class="section-header fade-in">
-      <p class="section-label">02 / Como Funciona</p>
-      <h2 class="section-title">Simples de começar.<br/>Poderoso para crescer.</h2>
-      <p class="section-sub">Em menos de uma semana sua operação já está dentro do ShowOZ. Sem complexidade, sem planilha de migração.</p>
+<section id="sobre" class="section divider" style="background:#050505">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:80px">
+      <div class="section-label"><span class="section-label-line"></span>A solução<span class="section-label-line"></span></div>
+      <h2>Um sistema feito de dentro<br><span style="color:var(--green)">do mercado artístico.</span></h2>
     </div>
     <div class="steps">
-      <div class="step fade-in">
-        <div class="step-num">1</div>
-        <div class="step-content">
-          <h3>Cadastre sua equipe e artistas</h3>
-          <p>Crie os perfis dos seus artistas, defina os papéis de cada membro da equipe (comercial, financeiro, produção) e configure as permissões de acesso. Cada um vê só o que precisa.</p>
-          <div class="step-tags">
-            <span class="step-tag">Controle de acesso</span>
-            <span class="step-tag">Multi-usuário</span>
-            <span class="step-tag">Perfis por função</span>
-          </div>
-        </div>
+      <div class="step"><div class="step-line"></div><div class="step-num">01</div><div class="step-title">Cadastre sua assessoria</div><div class="step-desc">Crie sua organização em minutos. Convide sua equipe com permissões por cargo — cada um vê só o que precisa.</div></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">02</div><div class="step-title">Cadastre os shows</div><div class="step-desc">Cada show entra no pipeline. Do primeiro pedido até o financeiro finalizado, tudo rastreado em tempo real.</div></div>
+      <div class="step"><div class="step-line"></div><div class="step-num">03</div><div class="step-title">Gerencie com clareza</div><div class="step-desc">Contratos, cachês, parcelas, tarefas, equipe, calendário. Uma visão completa da sua operação.</div></div>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card"><div class="feat-icon">🎭</div><div class="feat-title">Pipeline Visual de Shows</div><div class="feat-desc">Acompanhe cada show do pedido ao financeiro finalizado. Status em tempo real. Toda equipe alinhada.</div></div>
+      <div class="feat-card"><div class="feat-icon">💰</div><div class="feat-title">Financeiro Completo</div><div class="feat-desc">Cachês, parcelas, contas a pagar e receber. Alertas automáticos de vencimento. Nunca mais perca dinheiro.</div></div>
+      <div class="feat-card"><div class="feat-icon">📋</div><div class="feat-title">Contratos e Documentos</div><div class="feat-desc">Organize contratos por show. Riders, NFs, documentos. Tudo centralizado, tudo acessível.</div></div>
+      <div class="feat-card"><div class="feat-icon">👥</div><div class="feat-title">Gestão da Equipe</div><div class="feat-desc">Admin, comercial, financeiro, produção, estrada. Cada cargo com sua visão. Sem informação errada.</div></div>
+      <div class="feat-card"><div class="feat-icon">📅</div><div class="feat-title">Calendário Operacional</div><div class="feat-desc">Shows e tarefas integrados. Sua equipe sabe o que fazer em cada dia, em cada show.</div></div>
+      <div class="feat-card"><div class="feat-icon">🤖</div><div class="feat-title">IA Copilot</div><div class="feat-desc">Análises inteligentes, alertas automáticos e insights sobre sua operação. Gestão do futuro, hoje.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="quote-section">
+  <div class="quote-inner">
+    <div class="quote-line-top"></div>
+    <blockquote>"Antes do ShowOZ eu tinha medo de responder <em>'como vai o financeiro do artista?'</em>. Hoje abro o sistema e tenho a resposta em 10 segundos."</blockquote>
+    <div class="quote-author">
+      <div class="quote-avatar">K</div>
+      <div style="text-align:left"><div class="quote-name">Kaio</div><div class="quote-role">CEO — ShowOZ · Assessor do mercado artístico</div></div>
+    </div>
+    <div class="quote-line-bot"></div>
+  </div>
+</section>
+
+<section class="section divider" style="background:#050505">
+  <div class="section-inner">
+    <div class="compare-grid">
+      <div class="compare-col bad">
+        <div class="compare-label bad">Sem o ShowOZ</div>
+        <div class="compare-item"><span class="compare-x">✗</span><span class="compare-text-bad">Planilha como sistema de gestão</span></div>
+        <div class="compare-item"><span class="compare-x">✗</span><span class="compare-text-bad">WhatsApp como CRM</span></div>
+        <div class="compare-item"><span class="compare-x">✗</span><span class="compare-text-bad">Parcelas no "achismo"</span></div>
+        <div class="compare-item"><span class="compare-x">✗</span><span class="compare-text-bad">Equipe sem alinhamento</span></div>
+        <div class="compare-item"><span class="compare-x">✗</span><span class="compare-text-bad">Relatório inexistente</span></div>
+        <div class="compare-item"><span class="compare-x">✗</span><span class="compare-text-bad">Decisões no improviso</span></div>
       </div>
-      <div class="step fade-in">
-        <div class="step-num">2</div>
-        <div class="step-content">
-          <h3>Gerencie seus shows do início ao fim</h3>
-          <p>Do primeiro contato ao pagamento final — cada show percorre as etapas do pipeline: pedido, negociação, show fechado, contrato, pré-produção, execução e financeiro. Nada cai no esquecimento.</p>
-          <div class="step-tags">
-            <span class="step-tag">Pipeline visual</span>
-            <span class="step-tag">Histórico completo</span>
-            <span class="step-tag">Alertas automáticos</span>
-          </div>
-        </div>
-      </div>
-      <div class="step fade-in">
-        <div class="step-num">3</div>
-        <div class="step-content">
-          <h3>Acompanhe o financeiro em tempo real</h3>
-          <p>Contas a receber, parcelas, custos por show, centros de custo e dashboard de KPIs — tudo atualizado em tempo real. Você sabe exatamente quanto vai entrar e quanto vai sair antes de assinar qualquer contrato.</p>
-          <div class="step-tags">
-            <span class="step-tag">Contas a receber</span>
-            <span class="step-tag">Controle de custos</span>
-            <span class="step-tag">Dashboard financeiro</span>
-          </div>
-        </div>
+      <div class="compare-col good">
+        <div class="compare-label good">Com o ShowOZ</div>
+        <div class="compare-item"><span class="compare-check">✓</span><span class="compare-text-good">Pipeline visual de todos os shows</span></div>
+        <div class="compare-item"><span class="compare-check">✓</span><span class="compare-text-good">Toda equipe no mesmo lugar</span></div>
+        <div class="compare-item"><span class="compare-check">✓</span><span class="compare-text-good">Financeiro rastreado em tempo real</span></div>
+        <div class="compare-item"><span class="compare-check">✓</span><span class="compare-text-good">Cada cargo com sua visão</span></div>
+        <div class="compare-item"><span class="compare-check">✓</span><span class="compare-text-good">Relatórios com um clique</span></div>
+        <div class="compare-item"><span class="compare-check">✓</span><span class="compare-text-good">Decisões baseadas em dados</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FEATURES -->
-<section class="features-section" id="funcionalidades">
-  <div class="container">
-    <div class="section-header center fade-in">
-      <p class="section-label">03 / O Sistema</p>
-      <h2 class="section-title">Tudo que sua operação precisa.<br/>Em um só lugar.</h2>
-      <p class="section-sub">Seis módulos integrados que cobrem do comercial ao operacional, do financeiro ao jurídico.</p>
-    </div>
-    <div class="features-grid">
-      <div class="feature-card fade-in">
-        <div class="feature-icon purple">🎯</div>
-        <h3>Pipeline Comercial</h3>
-        <p>Visualize todos os shows em andamento no Kanban. Acompanhe cada negociação, da proposta ao fechamento, sem perder nenhum pedido.</p>
-        <ul class="feature-list">
-          <li>Kanban com todos os estágios do show</li>
-          <li>Histórico de praças e cachês por artista</li>
-          <li>Alertas de shows na mesma cidade</li>
-          <li>Propostas e follow-up integrados</li>
-        </ul>
-      </div>
-      <div class="feature-card fade-in">
-        <div class="feature-icon green">💰</div>
-        <h3>Controle Financeiro</h3>
-        <p>Contas a pagar e receber, parcelas de cachê, centros de custo e margens por show — o financeiro real antes de assinar o contrato.</p>
-        <ul class="feature-list">
-          <li>Contas a receber com alertas de vencimento</li>
-          <li>Custo real por show (cachê + rider + impostos)</li>
-          <li>Centros de custo por projeto</li>
-          <li>Margem de lucro calculada automaticamente</li>
-        </ul>
-      </div>
-      <div class="feature-card fade-in">
-        <div class="feature-icon blue">📅</div>
-        <h3>Calendário Duplo</h3>
-        <p>Visão comercial e operacional integradas. Sem conflitos de datas, sem shows duplicados na mesma praça, sem supresas de agenda.</p>
-        <ul class="feature-list">
-          <li>Calendário comercial e operacional</li>
-          <li>Verificação automática de conflitos</li>
-          <li>Histórico de praças por artista</li>
-          <li>Sincronização com toda a equipe</li>
-        </ul>
-      </div>
-      <div class="feature-card fade-in">
-        <div class="feature-icon orange">✅</div>
-        <h3>Gestão de Equipe</h3>
-        <p>Tarefas por departamento, responsáveis definidos e prazos acompanhados. Ninguém fica sem saber o que fazer antes do show.</p>
-        <ul class="feature-list">
-          <li>Tarefas por show e por equipe</li>
-          <li>Departamentos: produção, comercial, jurídico</li>
-          <li>Notificações de prazo</li>
-          <li>Checklist de pré-produção</li>
-        </ul>
-      </div>
-      <div class="feature-card fade-in">
-        <div class="feature-icon pink">📈</div>
-        <h3>Inteligência e KPIs</h3>
-        <p>Dashboards com os números que importam: shows por período, receita por artista, praças mais lucrativas e muito mais.</p>
-        <ul class="feature-list">
-          <li>Dashboard financeiro em tempo real</li>
-          <li>Relatórios por artista e período</li>
-          <li>Performance por praça e região</li>
-          <li>Exportação de relatórios em PDF</li>
-        </ul>
-      </div>
-      <div class="feature-card fade-in">
-        <div class="feature-icon teal">🔐</div>
-        <h3>Segurança e Acesso</h3>
-        <p>Cada usuário acessa só o que precisa. Comercial não vê o financeiro. Estrada não edita contratos. Controle total por perfil.</p>
-        <ul class="feature-list">
-          <li>Perfis: comercial, financeiro, jurídico, produção</li>
-          <li>Controle de acesso por módulo</li>
-          <li>Histórico de ações da equipe</li>
-          <li>Dados 100% isolados por empresa</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- METRICS -->
-<section class="metrics-section">
-  <div class="container">
-    <div class="section-header center fade-in" style="margin-bottom:64px">
-      <p class="section-label">Impacto real</p>
-      <h2 class="section-title">Números que falam<br/>por si mesmos.</h2>
-    </div>
-    <div class="metrics-grid">
-      <div class="metric-item fade-in">
-        <div class="metric-value">10<span class="metric-accent">×</span></div>
-        <div class="metric-label">mais rápido para encontrar qualquer informação de show</div>
-      </div>
-      <div class="metric-item fade-in">
-        <div class="metric-value">R$<span class="metric-accent">0</span></div>
-        <div class="metric-label">em parcelas perdidas com alertas automáticos de vencimento</div>
-      </div>
-      <div class="metric-item fade-in">
-        <div class="metric-value">100<span class="metric-accent">%</span></div>
-        <div class="metric-label">da operação centralizada em um único sistema</div>
-      </div>
-      <div class="metric-item fade-in">
-        <div class="metric-value">-70<span class="metric-accent">%</span></div>
-        <div class="metric-label">de tempo gasto com planilhas e cobranças manuais</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- TESTIMONIAL -->
-<section class="testimonial-section">
-  <div class="container">
-    <div class="testimonial-wrap fade-in">
-      <div class="stars">★★★★★</div>
-      <p class="testimonial-quote">
-        Antes eu vivia no WhatsApp tentando lembrar o que foi combinado com cada contratante. Agora o histórico está no sistema, minha equipe sabe o que fazer e consigo ver o financeiro de qualquer show em segundos.
-      </p>
-      <div class="testimonial-author">
-        <div class="author-avatar">MA</div>
-        <div class="author-info">
-          <div class="author-name">Marcos Almeida</div>
-          <div class="author-role">Diretor — Escritório de Gestão Artística, São Paulo</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FAQ -->
-<section class="faq-section" id="faq">
-  <div class="container">
-    <div class="section-header center fade-in">
-      <p class="section-label">Dúvidas frequentes</p>
-      <h2 class="section-title">Perguntas que todo<br/>produtor faz.</h2>
-    </div>
-    <div class="faq-list">
-      <div class="faq-item fade-in">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          Preciso de conhecimento técnico para usar o ShowOZ?
-          <span class="faq-chevron">▾</span>
-        </button>
-        <div class="faq-a">Não. O ShowOZ foi desenhado para quem vive de show, não para quem vive de tecnologia. A interface é intuitiva e em menos de uma semana sua equipe já está operando com confiança. Oferecemos onboarding guiado para todos os clientes.</div>
-      </div>
-      <div class="faq-item fade-in">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          Consigo migrar meus dados de planilha para o sistema?
-          <span class="faq-chevron">▾</span>
-        </button>
-        <div class="faq-a">Sim. Nossa equipe te ajuda na migração dos dados históricos de shows, artistas e contatos durante o onboarding. Você não perde nenhuma informação importante.</div>
-      </div>
-      <div class="faq-item fade-in">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          Quantos usuários posso ter na minha conta?
-          <span class="faq-chevron">▾</span>
-        </button>
-        <div class="faq-a">Depende do plano escolhido. Oferecemos planos que vão de equipes pequenas até escritórios com múltiplos departamentos. Fale conosco para entender qual plano faz sentido para o tamanho da sua operação.</div>
-      </div>
-      <div class="faq-item fade-in">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          Meus dados ficam seguros? Outras empresas conseguem ver?
-          <span class="faq-chevron">▾</span>
-        </button>
-        <div class="faq-a">Seus dados são 100% isolados da operação de outras empresas. Utilizamos Row Level Security (RLS) no banco de dados, o que garante que absolutamente nenhuma outra organização acessa suas informações. Tudo criptografado e hospedado em infraestrutura de alta disponibilidade.</div>
-      </div>
-      <div class="faq-item fade-in">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          Funciona para qualquer tamanho de escritório?
-          <span class="faq-chevron">▾</span>
-        </button>
-        <div class="faq-a">Sim. Seja você um produtor solo gerenciando 10 shows por mês ou um escritório com 5 artistas e equipe de 15 pessoas, o ShowOZ escala com sua operação. Você paga pelo que usa.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA FINAL -->
 <section class="cta-section">
-  <div class="container">
-    <div class="cta-box fade-in">
-      <div class="badge" style="margin-bottom:28px">Chega de bagunça</div>
-      <h2>Sua operação merece<br/>mais do que uma planilha.</h2>
-      <p>Fale com a gente agora e veja como o ShowOZ funciona para a realidade da sua produtora. Demo gratuita, sem compromisso.</p>
-      <div class="cta-buttons">
-        <a href="https://wa.me/5562985794489?text=Olá!%20Quero%20uma%20demo%20do%20ShowOZ." target="_blank" class="btn btn-green btn-xl">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          Falar no WhatsApp agora
-        </a>
-        <a href="mailto:contato@showoz.com.br" class="btn btn-outline btn-xl">Enviar e-mail →</a>
-      </div>
-      <p class="cta-guarantee">🔒 Sem cartão de crédito &nbsp;·&nbsp; Demo gratuita &nbsp;·&nbsp; Resposta em até 2 horas</p>
-    </div>
+  <div class="cta-glow"></div>
+  <div class="cta-inner">
+    <div class="section-label" style="justify-content:center;margin-bottom:32px"><span class="section-label-line"></span>Pronto para mudar de nível?<span class="section-label-line"></span></div>
+    <h2>Sua assessoria merece um <span style="background:linear-gradient(135deg,#22c55e,#4ade80);-webkit-background-clip:text;-webkit-text-fill-color:transparent">sistema de verdade.</span></h2>
+    <p style="color:#71717a;font-size:18px;line-height:1.7;margin:24px 0 48px">Fale com a gente. Vamos entender sua operação e mostrar como o ShowOZ se encaixa no seu dia a dia.</p>
+    <a href="https://wa.me/5562985794489?text=Quero%20uma%20demo%20do%20ShowOZ" target="_blank" class="btn-wa" style="font-size:19px;padding:20px 52px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Quero minha demonstração gratuita
+    </a>
+    <p class="cta-note">Sem compromisso · Demo personalizada · Resposta em até 2h</p>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
-  <div class="container">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <a href="#" class="logo">
-          <div class="logo-mark">SZ</div>
-          <span class="logo-text">Show<span>OZ</span></span>
-        </a>
-        <p>Sistema operacional para produtoras e escritórios artísticos brasileiros. Do pedido ao pagamento, tudo em um lugar.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Produto</h4>
-        <ul>
-          <li><a href="#funcionalidades">Funcionalidades</a></li>
-          <li><a href="#sistema">Como funciona</a></li>
-          <li><a href="#faq">FAQ</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Contato</h4>
-        <ul>
-          <li><a href="https://wa.me/5562985794489" target="_blank">WhatsApp</a></li>
-          <li><a href="mailto:contato@showoz.com.br">E-mail</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Legal</h4>
-        <ul>
-          <li><a href="#">Termos de Uso</a></li>
-          <li><a href="#">Privacidade</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2025 ShowOZ. Todos os direitos reservados.</span>
-      <div class="footer-badge">
-        <span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block"></span>
-        Sistema operacional — 99.9% uptime
-      </div>
-    </div>
+  <div class="footer-logo">Show<span>OZ</span></div>
+  <div class="footer-copy">© 2025 ShowOZ · O sistema do mercado artístico brasileiro</div>
+  <div class="footer-links">
+    <a href="https://wa.me/5562985794489" target="_blank" class="footer-wa"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> (62) 98579-4489</a>
+    <a href="mailto:contato@showoz.com.br" class="footer-mail">contato@showoz.com.br</a>
   </div>
 </footer>
 
 <script>
-  // Nav scroll
-  const navbar = document.getElementById('navbar');
   window.addEventListener('scroll', () => {
-    navbar.classList.toggle('scrolled', window.scrollY > 20);
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
   });
 
-  // Mobile nav
-  const hamburger = document.getElementById('hamburger');
-  const mobileNav = document.getElementById('mobileNav');
-  const mobileClose = document.getElementById('mobileClose');
-  hamburger.addEventListener('click', () => mobileNav.classList.add('open'));
-  mobileClose.addEventListener('click', closeMobileNav);
-  function closeMobileNav() { mobileNav.classList.remove('open'); }
+  const artists = ['Alok','Bhaskar','Gusttavo Lima','Simone & Simaria','Maiara & Maraisa','Wesley Safadão','Xand Avião','Léo Santana','Anitta','Dennis DJ','Zé Vaqueiro','Henrique & Juliano'];
+  const track = document.getElementById('marquee');
+  track.innerHTML = [...artists,...artists].map(a => `<span class="marquee-item"><span class="marquee-dot"></span>${a}</span>`).join('');
 
-  // Fade in on scroll
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), i * 80);
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-  // FAQ
-  function toggleFaq(btn) {
-    const item = btn.closest('.faq-item');
-    const isOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
-    if (!isOpen) item.classList.add('open');
-  }
+  let done = false;
+  new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting || done) return;
+    done = true;
+    const dur = 2000, steps = 60; let s = 0;
+    const t = setInterval(() => {
+      s++; const p = 1 - Math.pow(1 - s/steps, 3);
+      document.getElementById('stat1').textContent = Math.round(1240*p).toLocaleString('pt-BR')+'+';
+      document.getElementById('stat2').textContent = Math.round(87*p)+'+';
+      document.getElementById('stat3').textContent = 'R$ '+Math.round(48*p)+'M+';
+      if (s >= steps) clearInterval(t);
+    }, dur/steps);
+  }, {threshold:.3}).observe(document.querySelector('.stats-section'));
 </script>
 </body>
 </html>
