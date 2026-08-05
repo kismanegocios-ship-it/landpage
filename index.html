@@ -4,246 +4,239 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>ShowOZ — O sistema do mercado artístico brasileiro</title>
-<meta name="description" content="Para quem gerencia artistas de verdade. O sistema operacional do mercado artístico brasileiro."/>
+<meta name="description" content="Gestão de shows. Sem caos. O sistema operacional do mercado artístico brasileiro."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --g:#22c55e;--g2:#4ade80;--g3:#86efac;
-  --bg:#020202;--surface:#0a0a0a;--card:#0f0f0f;
-  --border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.1);
-  --t1:#ffffff;--t2:#a1a1aa;--t3:#52525b;--t4:#3f3f46;
+  /* Paleta premium: Púrpura → Índigo → Verde */
+  --p1:#a855f7;   /* purple */
+  --p2:#6366f1;   /* indigo */
+  --p3:#22c55e;   /* green */
+  --p4:#4ade80;   /* green light */
+  --grad:linear-gradient(135deg,var(--p1),var(--p2),var(--p3));
+  --grad-text:linear-gradient(135deg,#fff 0%,#e2d9f3 30%,var(--p1) 55%,var(--p3) 100%);
+  /* Surfaces */
+  --bg:#020202;
+  --s1:#080808;
+  --s2:#0c0c0c;
+  --border:rgba(255,255,255,.07);
+  --border2:rgba(255,255,255,.12);
+  /* Texto */
+  --t1:#f8f8f8;
+  --t2:#a1a1aa;
+  --t3:#52525b;
+  --t4:#3f3f46;
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--t1);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;cursor:none}
+body{background:var(--bg);color:var(--t1);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{text-decoration:none;color:inherit}
-img{max-width:100%}
 ::-webkit-scrollbar{width:2px}
-::-webkit-scrollbar-thumb{background:#222}
+::-webkit-scrollbar-thumb{background:#1e1e1e}
 
-/* ─── CURSOR ─────────────────────────────────────── */
-#cursor{position:fixed;width:8px;height:8px;background:var(--g);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .2s}
-#cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(34,197,94,.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .12s ease}
+/* ─── NOISE OVERLAY ───────────────────────────── */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:.5}
 
-/* ─── NOISE ─────────────────────────────────────── */
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:.35;pointer-events:none;z-index:1}
+/* ─── AURORA ─────────────────────────────────── */
+.aurora{position:fixed;inset:0;pointer-events:none;z-index:0}
+.orb{position:absolute;border-radius:50%;filter:blur(110px);will-change:transform}
+.o1{width:800px;height:800px;top:-200px;left:-200px;background:radial-gradient(circle,rgba(168,85,247,.10),transparent 65%);animation:drift1 28s ease-in-out infinite}
+.o2{width:600px;height:600px;top:30%;right:-150px;background:radial-gradient(circle,rgba(99,102,241,.08),transparent 65%);animation:drift2 22s ease-in-out infinite}
+.o3{width:500px;height:500px;bottom:-100px;left:25%;background:radial-gradient(circle,rgba(34,197,94,.06),transparent 65%);animation:drift3 26s ease-in-out infinite}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(80px,60px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,-80px)}}
+@keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(50px,-40px)}}
 
-/* ─── AURORA ─────────────────────────────────────── */
-.aurora{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-.orb{position:absolute;border-radius:50%;filter:blur(120px);animation:drift 20s ease-in-out infinite}
-.orb1{width:700px;height:700px;background:radial-gradient(circle,rgba(34,197,94,.12),transparent 70%);top:-20%;left:-10%;animation-duration:25s}
-.orb2{width:500px;height:500px;background:radial-gradient(circle,rgba(74,222,128,.08),transparent 70%);top:40%;right:-10%;animation-duration:30s;animation-delay:-8s}
-.orb3{width:400px;height:400px;background:radial-gradient(circle,rgba(134,239,172,.06),transparent 70%);bottom:-10%;left:30%;animation-duration:22s;animation-delay:-14s}
-@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(60px,-40px) scale(1.05)}66%{transform:translate(-40px,30px) scale(.95)}}
+/* ─── NAV ─────────────────────────────────────── */
+nav{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:200;width:calc(100% - 48px);max-width:1100px;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px 0 24px;background:rgba(8,8,8,.6);backdrop-filter:blur(40px) saturate(180%);border:1px solid var(--border);border-radius:100px;transition:all .4s}
+nav.solid{background:rgba(5,5,5,.88);border-color:var(--border2)}
+.logo{font-size:20px;font-weight:900;letter-spacing:-1px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-r{display:flex;align-items:center;gap:6px}
+.nav-link{font-size:13px;font-weight:500;color:var(--t3);padding:0 14px;height:36px;display:flex;align-items:center;border-radius:100px;transition:all .2s}
+.nav-link:hover{color:var(--t1);background:rgba(255,255,255,.05)}
+.btn-nav{display:inline-flex;align-items:center;gap:8px;background:var(--p3);color:#052e16;font-weight:800;font-size:13px;padding:10px 20px;border-radius:100px;transition:all .2s;white-space:nowrap}
+.btn-nav:hover{background:var(--p4);box-shadow:0 0 28px rgba(34,197,94,.35)}
 
-/* ─── NAV ─────────────────────────────────────────── */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 clamp(24px,4vw,64px);height:68px;display:flex;align-items:center;justify-content:space-between;transition:all .4s}
-nav.solid{background:rgba(2,2,2,.85);backdrop-filter:blur(32px) saturate(180%);border-bottom:1px solid var(--border)}
-.logo{font-size:22px;font-weight:900;letter-spacing:-1px;position:relative;z-index:2}
-.logo em{color:var(--g);font-style:normal}
-.nav-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;padding:6px 6px 6px 20px}
-.nav-link{font-size:13px;font-weight:500;color:var(--t2);padding:0 12px;transition:color .2s}
-.nav-link:hover{color:var(--t1)}
-.nav-cta{display:inline-flex;align-items:center;gap:8px;background:var(--g);color:#052e16;font-weight:800;font-size:13px;padding:10px 20px;border-radius:100px;transition:all .2s}
-.nav-cta:hover{background:var(--g2);box-shadow:0 0 24px rgba(34,197,94,.4)}
+/* ─── HERO ─────────────────────────────────────── */
+.hero{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:clamp(140px,18vh,200px) clamp(24px,5vw,80px) 100px}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(ellipse 70% 55% at 50% 20%,black,transparent);pointer-events:none}
+.badge{display:inline-flex;align-items:center;gap:10px;margin-bottom:40px;padding:5px 16px 5px 8px;border-radius:100px;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);font-size:12px;font-weight:600;color:#c4b5fd;letter-spacing:.3px}
+.badge-dot{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,rgba(168,85,247,.25),rgba(99,102,241,.15));display:flex;align-items:center;justify-content:center}
+.badge-dot::after{content:'';width:8px;height:8px;border-radius:50%;background:var(--p1);display:block;animation:pulse 2.5s ease infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.hero h1{font-size:clamp(56px,9vw,120px);font-weight:900;line-height:.92;letter-spacing:-4px;margin-bottom:36px;animation:up .9s cubic-bezier(.16,1,.3,1) both}
+.grad-text{background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block}
+.hero-sub{font-size:clamp(16px,1.8vw,19px);color:var(--t2);max-width:520px;line-height:1.8;margin-bottom:52px;animation:up .9s cubic-bezier(.16,1,.3,1) .1s both}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;animation:up .9s cubic-bezier(.16,1,.3,1) .2s both;margin-bottom:80px}
+.btn-main{display:inline-flex;align-items:center;gap:10px;background:var(--p3);color:#052e16;font-weight:800;font-size:16px;padding:18px 40px;border-radius:100px;transition:all .25s;box-shadow:0 0 0 0 rgba(34,197,94,.4)}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 8px 40px rgba(34,197,94,.4),0 0 0 8px rgba(34,197,94,.06)}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;color:var(--t2);border:1px solid var(--border2);font-size:15px;padding:18px 36px;border-radius:100px;transition:all .2s;background:rgba(255,255,255,.03);backdrop-filter:blur(8px)}
+.btn-ghost:hover{color:var(--t1);border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.06)}
+.hero-stats{display:flex;align-items:center;gap:0;animation:up .9s cubic-bezier(.16,1,.3,1) .3s both}
+.hstat{text-align:center;padding:0 32px;border-right:1px solid var(--border)}
+.hstat:last-child{border-right:none}
+.hstat-n{font-size:clamp(22px,3vw,32px);font-weight:900;letter-spacing:-1px;background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hstat-l{font-size:12px;color:var(--t3);margin-top:4px}
 
-/* ─── HERO ─────────────────────────────────────────── */
-.hero{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:clamp(120px,18vh,180px) clamp(24px,4vw,64px) 100px;overflow:hidden}
-.hero-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,black,transparent)}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(34,197,94,.25);background:rgba(34,197,94,.06);border-radius:100px;padding:7px 18px 7px 10px;font-size:12px;font-weight:600;color:var(--g2);letter-spacing:.5px;margin-bottom:40px;animation:fadeUp .8s ease both}
-.hero-eyebrow-dot{width:24px;height:24px;border-radius:50%;background:rgba(34,197,94,.15);display:flex;align-items:center;justify-content:center}
-.hero-eyebrow-dot::after{content:'';width:8px;height:8px;border-radius:50%;background:var(--g);display:block;animation:pulse 2s infinite}
-.hero h1{font-size:clamp(52px,8.5vw,112px);font-weight:900;line-height:.95;letter-spacing:-4px;margin-bottom:32px;animation:fadeUp .8s ease .1s both}
-.hero h1 .line2{display:block;background:linear-gradient(135deg,var(--g) 0%,var(--g2) 40%,#a7f3d0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero-sub{font-size:clamp(16px,2vw,20px);color:var(--t2);max-width:580px;line-height:1.7;margin-bottom:52px;animation:fadeUp .8s ease .2s both}
-.hero-sub strong{color:var(--t1);font-weight:600}
-.hero-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;animation:fadeUp .8s ease .3s both;margin-bottom:80px}
-.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--g);color:#052e16;font-weight:800;font-size:16px;padding:18px 40px;border-radius:100px;transition:all .25s;position:relative;overflow:hidden}
-.btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);opacity:0;transition:opacity .2s}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 48px rgba(34,197,94,.4)}
-.btn-primary:hover::before{opacity:1}
-.btn-secondary{display:inline-flex;align-items:center;gap:8px;color:var(--t2);border:1px solid var(--border2);font-size:16px;padding:18px 36px;border-radius:100px;transition:all .2s;backdrop-filter:blur(8px);background:rgba(255,255,255,.03)}
-.btn-secondary:hover{color:var(--t1);border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.06)}
-.hero-proof{display:flex;align-items:center;gap:16px;animation:fadeUp .8s ease .4s both}
-.proof-avatars{display:flex}
-.proof-avatar{width:32px;height:32px;border-radius:50%;border:2px solid var(--bg);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;margin-left:-8px;color:#052e16}
-.proof-avatar:first-child{margin-left:0}
-.proof-text{font-size:13px;color:var(--t3)}
-.proof-text strong{color:var(--t2);font-weight:600}
+/* ─── MARQUEE ─────────────────────────────────── */
+.mq{position:relative;z-index:2;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:18px 0;overflow:hidden;background:rgba(5,5,5,.7)}
+.mq::before{content:'';position:absolute;left:0;top:0;bottom:0;width:160px;background:linear-gradient(to right,var(--bg),transparent);z-index:2}
+.mq::after{content:'';position:absolute;right:0;top:0;bottom:0;width:160px;background:linear-gradient(to left,var(--bg),transparent);z-index:2}
+.mq-track{display:flex;width:max-content;animation:marquee 38s linear infinite}
+.mq-item{display:inline-flex;align-items:center;gap:14px;margin-right:48px;color:var(--t4);font-size:13px;font-weight:600;white-space:nowrap;letter-spacing:.3px;transition:color .2s}
+.mq-item:hover{color:var(--t2)}
+.mq-dot{width:5px;height:5px;border-radius:50%;background:linear-gradient(135deg,var(--p1),var(--p3));flex-shrink:0}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-/* ─── MARQUEE ─────────────────────────────────────── */
-.marquee-section{position:relative;z-index:2;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:20px 0;background:rgba(5,5,5,.8);backdrop-filter:blur(20px);overflow:hidden}
-.marquee-fade-l{position:absolute;left:0;top:0;bottom:0;width:200px;background:linear-gradient(to right,#020202,transparent);z-index:2}
-.marquee-fade-r{position:absolute;right:0;top:0;bottom:0;width:200px;background:linear-gradient(to left,#020202,transparent);z-index:2}
-.marquee-track{display:flex;width:max-content;animation:marquee 35s linear infinite}
-.marquee-item{display:inline-flex;align-items:center;gap:12px;margin-right:52px;color:var(--t4);font-size:14px;font-weight:600;white-space:nowrap;letter-spacing:.5px;transition:color .3s}
-.marquee-item:hover{color:var(--t2)}
-.marquee-sep{width:4px;height:4px;border-radius:50%;background:var(--g);opacity:.4}
+/* ─── PROBLEM ─────────────────────────────────── */
+.problem{position:relative;z-index:2;padding:clamp(100px,12vw,160px) clamp(24px,5vw,80px)}
+.inner{max-width:1160px;margin:0 auto}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--t3);margin-bottom:24px}
+.eyebrow-line{width:28px;height:1px;background:linear-gradient(90deg,var(--p1),var(--p3))}
+.problem-top{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:end;margin-bottom:72px}
+.problem h2{font-size:clamp(36px,4.5vw,60px);font-weight:900;letter-spacing:-2.5px;line-height:1.05}
+.red{background:linear-gradient(135deg,#f87171,#fb923c);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.problem-right{color:var(--t2);font-size:17px;line-height:1.8}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:24px;overflow:hidden}
+.pc{background:var(--s1);padding:36px 32px;transition:background .3s;position:relative;overflow:hidden}
+.pc::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(248,113,113,.4),transparent);opacity:0;transition:opacity .3s}
+.pc:hover{background:#0d0808}
+.pc:hover::after{opacity:1}
+.pc-n{font-size:11px;font-weight:700;color:var(--t4);letter-spacing:2px;margin-bottom:20px}
+.pc-ico{font-size:28px;margin-bottom:16px;display:block}
+.pc-t{font-size:15px;font-weight:700;margin-bottom:10px;line-height:1.4}
+.pc-d{font-size:13px;color:var(--t3);line-height:1.75}
 
-/* ─── PROBLEM ─────────────────────────────────────── */
-.problem{position:relative;z-index:2;padding:clamp(100px,12vw,160px) clamp(24px,4vw,64px);background:var(--bg)}
-.problem-inner{max-width:1200px;margin:0 auto}
-.label{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--g);margin-bottom:24px}
-.label-line{width:24px;height:1px;background:var(--g)}
-.problem-header{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:end;margin-bottom:80px}
-.problem h2{font-size:clamp(36px,5vw,64px);font-weight:900;letter-spacing:-2.5px;line-height:1.05}
-.problem h2 .red{color:#f87171}
-.problem-desc{color:var(--t2);font-size:17px;line-height:1.75;padding-bottom:8px}
-.pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:24px;overflow:hidden}
-.pain-card{background:var(--surface);padding:36px 32px;position:relative;overflow:hidden;transition:background .3s}
-.pain-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(248,113,113,.3),transparent);opacity:0;transition:opacity .3s}
-.pain-card:hover{background:#0e0808}
-.pain-card:hover::before{opacity:1}
-.pain-num{font-size:11px;font-weight:700;color:var(--t4);letter-spacing:2px;margin-bottom:20px}
-.pain-icon{font-size:28px;margin-bottom:16px;display:block}
-.pain-title{font-size:16px;font-weight:700;color:var(--t1);margin-bottom:10px;line-height:1.4}
-.pain-desc{font-size:13px;color:var(--t3);line-height:1.75}
-
-/* ─── BENTO ───────────────────────────────────────── */
-.bento{position:relative;z-index:2;padding:clamp(100px,12vw,160px) clamp(24px,4vw,64px);background:var(--surface);border-top:1px solid var(--border)}
-.bento-inner{max-width:1200px;margin:0 auto}
-.bento-header{text-align:center;margin-bottom:64px}
-.bento-header h2{font-size:clamp(36px,5vw,64px);font-weight:900;letter-spacing:-2.5px;line-height:1.05;margin-top:16px}
-.bento-header p{font-size:17px;color:var(--t2);max-width:500px;margin:20px auto 0;line-height:1.7}
-.bento-grid{display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:auto;gap:12px}
-.bc{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px;overflow:hidden;position:relative;transition:border-color .3s,transform .3s}
-.bc:hover{border-color:rgba(34,197,94,.2);transform:translateY(-3px)}
-.bc .bc-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g);margin-bottom:16px}
-.bc h3{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:10px;line-height:1.3}
-.bc p{font-size:14px;color:var(--t2);line-height:1.7}
-.bc-icon{width:48px;height:48px;border-radius:12px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.15);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:24px}
-/* big cards */
-.bc-1{grid-column:span 7}
-.bc-2{grid-column:span 5}
-.bc-3{grid-column:span 5}
-.bc-4{grid-column:span 7}
-.bc-5{grid-column:span 4}
-.bc-6{grid-column:span 4}
-.bc-7{grid-column:span 4}
-/* card visual elements */
-.bc-pipeline{margin-top:28px;display:flex;flex-direction:column;gap:8px}
-.stage{display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(255,255,255,.03);border-radius:10px;border:1px solid var(--border);font-size:13px;transition:all .2s}
-.stage:hover{background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.15)}
-.stage-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.stage-name{font-weight:600;flex:1}
-.stage-count{font-size:12px;color:var(--t3);background:rgba(255,255,255,.05);padding:2px 10px;border-radius:100px}
-/* finance card */
-.bc-finance-bars{margin-top:28px;display:flex;flex-direction:column;gap:10px}
-.bar-row{display:flex;align-items:center;gap:12px}
-.bar-label{font-size:12px;color:var(--t3);width:80px;text-align:right}
-.bar-track{flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden}
-.bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--g),var(--g2));transition:width 1.5s ease}
-.bar-val{font-size:12px;color:var(--t2);font-weight:600;width:60px}
-/* stat cards */
-.bc-stat-num{font-size:clamp(40px,5vw,64px);font-weight:900;letter-spacing:-3px;line-height:1;background:linear-gradient(135deg,#fff,#a1a1aa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-top:20px}
-.bc-stat-sub{font-size:13px;color:var(--t3);margin-top:8px}
+/* ─── BENTO ─────────────────────────────────────── */
+.bento{position:relative;z-index:2;padding:clamp(100px,12vw,160px) clamp(24px,5vw,80px);background:var(--s1);border-top:1px solid var(--border)}
+.bento-head{text-align:center;margin-bottom:64px}
+.bento-head h2{font-size:clamp(36px,4.5vw,60px);font-weight:900;letter-spacing:-2.5px;line-height:1.05;margin-top:20px}
+.bento-head h2 em{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-style:normal}
+.bento-head p{font-size:16px;color:var(--t2);max-width:480px;margin:18px auto 0;line-height:1.75}
+.bg{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}
+.bc{background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:32px;overflow:hidden;position:relative;transition:border-color .3s,transform .25s}
+.bc:hover{border-color:rgba(168,85,247,.2);transform:translateY(-3px)}
+.bc-lbl{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px}
+.bc h3{font-size:20px;font-weight:800;letter-spacing:-.5px;margin-bottom:10px;line-height:1.3}
+.bc p{font-size:13px;color:var(--t2);line-height:1.7}
+.bc-ico{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,rgba(168,85,247,.1),rgba(34,197,94,.08));border:1px solid rgba(168,85,247,.2);display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:24px}
+.c7{grid-column:span 7}
+.c5{grid-column:span 5}
+.c4{grid-column:span 4}
+/* pipeline widget */
+.pipe-list{margin-top:24px;display:flex;flex-direction:column;gap:6px}
+.pipe-row{display:flex;align-items:center;gap:12px;padding:11px 14px;background:rgba(255,255,255,.03);border-radius:10px;border:1px solid var(--border);font-size:13px;transition:all .2s}
+.pipe-row:hover{background:rgba(168,85,247,.05);border-color:rgba(168,85,247,.15)}
+.pipe-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.pipe-name{flex:1;font-weight:600;color:var(--t1)}
+.pipe-tag{font-size:11px;color:var(--t3);background:rgba(255,255,255,.05);padding:2px 10px;border-radius:100px;font-weight:500}
+/* bar widget */
+.bars{margin-top:24px;display:flex;flex-direction:column;gap:10px}
+.bar-r{display:flex;align-items:center;gap:12px}
+.bar-l{font-size:12px;color:var(--t3);width:72px;text-align:right;flex-shrink:0}
+.bar-t{flex:1;height:5px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden}
+.bar-f{height:100%;border-radius:100px;background:var(--grad);transition:width 1.6s cubic-bezier(.16,1,.3,1)}
+.bar-v{font-size:12px;color:var(--t2);font-weight:700;width:36px;flex-shrink:0}
+/* stat big */
+.bc-num{font-size:clamp(44px,5vw,68px);font-weight:900;letter-spacing:-3px;line-height:1;background:var(--grad-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-top:16px}
+.bc-sub{font-size:12px;color:var(--t4);margin-top:8px}
+/* tags */
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:22px}
+.tag{font-size:11px;padding:4px 12px;border-radius:100px;font-weight:600}
 
 /* ─── QUOTE ─────────────────────────────────────── */
-.quote-sec{position:relative;z-index:2;padding:clamp(100px,12vw,160px) clamp(24px,4vw,64px);background:var(--bg);border-top:1px solid var(--border);text-align:center;overflow:hidden}
-.quote-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:1000px;height:600px;background:radial-gradient(ellipse,rgba(34,197,94,.06),transparent 65%);pointer-events:none;animation:drift 8s ease-in-out infinite}
-.quote-inner{position:relative;max-width:900px;margin:0 auto}
-.quote-mark{font-size:120px;line-height:.6;color:rgba(34,197,94,.12);font-weight:900;margin-bottom:24px;display:block}
-blockquote{font-size:clamp(24px,3.5vw,40px);font-weight:700;line-height:1.4;letter-spacing:-1px;color:var(--t1);margin-bottom:48px}
-blockquote em{color:var(--g);font-style:normal}
-.q-author{display:inline-flex;align-items:center;gap:16px}
-.q-av{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--g),#16a34a);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;color:#052e16;flex-shrink:0}
-.q-name{font-weight:800;font-size:16px;text-align:left}
-.q-role{color:var(--t3);font-size:13px;text-align:left;margin-top:2px}
+.quote{position:relative;z-index:2;padding:clamp(100px,12vw,160px) clamp(24px,5vw,80px);background:var(--bg);border-top:1px solid var(--border);text-align:center;overflow:hidden}
+.q-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:1100px;height:700px;background:radial-gradient(ellipse at 40%,rgba(168,85,247,.06),transparent 50%),radial-gradient(ellipse at 60%,rgba(34,197,94,.05),transparent 50%);pointer-events:none}
+.q-inner{position:relative;max-width:860px;margin:0 auto}
+.q-mark{display:block;font-size:160px;line-height:.5;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;opacity:.15;margin-bottom:16px;font-family:Georgia,serif}
+blockquote{font-size:clamp(24px,3.5vw,42px);font-weight:700;line-height:1.38;letter-spacing:-1px;margin-bottom:52px;color:var(--t1)}
+blockquote em{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-style:normal}
+.q-who{display:inline-flex;align-items:center;gap:16px}
+.q-av{width:52px;height:52px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;color:#fff;flex-shrink:0}
+.q-n{font-weight:800;font-size:16px;text-align:left}
+.q-r{color:var(--t3);font-size:13px;text-align:left;margin-top:2px}
 
 /* ─── COMPARE ────────────────────────────────────── */
-.compare{position:relative;z-index:2;padding:clamp(100px,12vw,160px) clamp(24px,4vw,64px);background:var(--surface);border-top:1px solid var(--border)}
-.compare-inner{max-width:1000px;margin:0 auto}
-.compare-header{text-align:center;margin-bottom:64px}
-.compare-header h2{font-size:clamp(36px,5vw,60px);font-weight:900;letter-spacing:-2.5px;line-height:1.05;margin-top:16px}
-.compare-grid{display:grid;grid-template-columns:1fr 1fr;border-radius:24px;overflow:hidden;border:1px solid var(--border)}
-.col-bad{background:var(--card);padding:clamp(40px,4vw,60px)}
-.col-good{background:linear-gradient(135deg,rgba(34,197,94,.05),rgba(34,197,94,.02));padding:clamp(40px,4vw,60px);border-left:1px solid var(--border)}
-.col-title{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:36px;display:flex;align-items:center;gap:10px}
-.col-title.bad{color:var(--t4)}
-.col-title.good{color:var(--g)}
+.compare{position:relative;z-index:2;padding:clamp(100px,12vw,160px) clamp(24px,5vw,80px);background:var(--s1);border-top:1px solid var(--border)}
+.compare-inner{max-width:960px;margin:0 auto}
+.compare h2{font-size:clamp(36px,4.5vw,60px);font-weight:900;letter-spacing:-2.5px;line-height:1.05;margin:20px 0 56px;text-align:center}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);border-radius:24px;overflow:hidden}
+.col{padding:clamp(40px,4vw,56px)}
+.col.b{background:var(--s2)}
+.col.g{background:linear-gradient(135deg,rgba(168,85,247,.04),rgba(34,197,94,.03));border-left:1px solid var(--border)}
+.col-h{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:36px;display:flex;align-items:center;gap:10px}
+.col-h.bad{color:var(--t4)}
+.col-h.good{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .ci{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px}
-.ci-x{color:#ef4444;font-size:16px;flex-shrink:0;margin-top:2px}
-.ci-ok{color:var(--g);font-size:16px;flex-shrink:0;margin-top:2px}
-.ci-text-bad{font-size:15px;color:var(--t4);text-decoration:line-through;line-height:1.5}
-.ci-text-good{font-size:15px;color:var(--t1);line-height:1.5}
+.cx{color:#f87171;font-weight:700;flex-shrink:0}
+.ck{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;flex-shrink:0}
+.tb{font-size:14px;color:var(--t4);text-decoration:line-through;line-height:1.5}
+.tg{font-size:14px;color:var(--t1);line-height:1.5}
 
 /* ─── CTA ────────────────────────────────────────── */
-.final-cta{position:relative;z-index:2;padding:clamp(120px,15vw,200px) clamp(24px,4vw,64px);background:var(--bg);border-top:1px solid var(--border);text-align:center;overflow:hidden}
-.cta-aurora{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:1200px;height:800px;background:radial-gradient(ellipse,rgba(34,197,94,.08),transparent 60%);pointer-events:none;animation:drift 10s ease-in-out infinite}
-.final-cta-inner{position:relative;max-width:800px;margin:0 auto}
-.final-cta h2{font-size:clamp(48px,7vw,88px);font-weight:900;letter-spacing:-3px;line-height:.95;margin-bottom:28px}
-.final-cta h2 span{background:linear-gradient(135deg,var(--g),var(--g2),#a7f3d0);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.final-cta p{font-size:18px;color:var(--t2);line-height:1.7;margin-bottom:52px;max-width:520px;margin-left:auto;margin-right:auto}
-.cta-note{font-size:13px;color:var(--t4);margin-top:24px}
-.cta-note span{color:var(--t3)}
+.cta{position:relative;z-index:2;padding:clamp(120px,16vw,200px) clamp(24px,5vw,80px);background:var(--bg);border-top:1px solid var(--border);text-align:center;overflow:hidden}
+.cta-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(168,85,247,.07),transparent),radial-gradient(ellipse 60% 50% at 50% 0%,rgba(34,197,94,.05),transparent);pointer-events:none}
+.cta-inner{position:relative;max-width:760px;margin:0 auto}
+.cta h2{font-size:clamp(48px,7vw,96px);font-weight:900;letter-spacing:-4px;line-height:.92;margin-bottom:28px}
+.cta h2 span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.cta p{font-size:17px;color:var(--t2);line-height:1.75;margin-bottom:52px;max-width:500px;margin-left:auto;margin-right:auto}
+.cta-note{font-size:13px;color:var(--t4);margin-top:28px}
+.cta-note b{color:var(--t3);font-weight:500}
 
 /* ─── FOOTER ─────────────────────────────────────── */
-footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:clamp(32px,4vw,48px) clamp(24px,4vw,64px);background:rgba(2,2,2,.9);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
-.footer-logo{font-size:20px;font-weight:900;letter-spacing:-1px}
-.footer-logo em{color:var(--g);font-style:normal}
-.footer-copy{font-size:13px;color:var(--t4)}
-.footer-links{display:flex;gap:24px;align-items:center}
-.footer-link{font-size:13px;color:var(--t3);display:flex;align-items:center;gap:6px;transition:color .2s}
-.footer-link:hover{color:var(--t1)}
-.footer-link.wa{color:#25d366}
+footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:40px clamp(24px,5vw,80px);background:rgba(2,2,2,.95);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+.flogo{font-size:20px;font-weight:900;letter-spacing:-1px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.fcopy{font-size:13px;color:var(--t4)}
+.flinks{display:flex;gap:24px}
+.flink{font-size:13px;color:var(--t3);display:flex;align-items:center;gap:6px;transition:color .2s}
+.flink:hover{color:var(--t1)}
+.flink.wa{color:#25d366}
 
 /* ─── WA FAB ─────────────────────────────────────── */
-.wa-fab{position:fixed;bottom:32px;right:32px;z-index:999;width:60px;height:60px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(37,211,102,.45);transition:all .25s;animation:waPulse 3s infinite}
-.wa-fab:hover{transform:scale(1.12);box-shadow:0 12px 48px rgba(37,211,102,.6)}
-@keyframes waPulse{0%,100%{box-shadow:0 8px 32px rgba(37,211,102,.45),0 0 0 0 rgba(37,211,102,.4)}50%{box-shadow:0 8px 32px rgba(37,211,102,.45),0 0 0 12px rgba(37,211,102,0)}}
+.wafab{position:fixed;bottom:28px;right:28px;z-index:500;width:58px;height:58px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 28px rgba(37,211,102,.4);transition:all .25s;animation:wap 3s ease infinite}
+.wafab:hover{transform:scale(1.1);box-shadow:0 10px 48px rgba(37,211,102,.6)}
+@keyframes wap{0%,100%{box-shadow:0 6px 28px rgba(37,211,102,.4),0 0 0 0 rgba(37,211,102,.35)}60%{box-shadow:0 6px 28px rgba(37,211,102,.4),0 0 0 14px rgba(37,211,102,0)}}
 
-/* ─── ANIM UTILS ─────────────────────────────────── */
-@keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.reveal{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease}
-.reveal.visible{opacity:1;transform:translateY(0)}
-.reveal-delay-1{transition-delay:.1s}
-.reveal-delay-2{transition-delay:.2s}
-.reveal-delay-3{transition-delay:.3s}
+/* ─── REVEAL ─────────────────────────────────────── */
+@keyframes up{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:translateY(0)}}
+.r{opacity:0;transform:translateY(32px);transition:opacity .75s ease,transform .75s ease}
+.r.v{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
 
 /* ─── RESPONSIVE ─────────────────────────────────── */
-@media(max-width:900px){
-  body{cursor:auto}
-  #cursor,#cursor-ring{display:none}
-  .problem-header{grid-template-columns:1fr}
-  .pain-grid{grid-template-columns:1fr 1fr}
-  .bento-grid{grid-template-columns:1fr 1fr}
-  .bc-1,.bc-2,.bc-3,.bc-4,.bc-5,.bc-6,.bc-7{grid-column:span 2}
-  .compare-grid{grid-template-columns:1fr}
-  .col-good{border-left:none;border-top:1px solid var(--border)}
-  .nav-pill .nav-link{display:none}
+@media(max-width:960px){
+  .problem-top,.cgrid{grid-template-columns:1fr}
+  .pgrid{grid-template-columns:1fr 1fr}
+  .bg{grid-template-columns:1fr 1fr}
+  .c7,.c5,.c4{grid-column:span 2}
+  .col.g{border-left:none;border-top:1px solid var(--border)}
 }
 @media(max-width:600px){
-  .pain-grid{grid-template-columns:1fr}
-  .bento-grid{grid-template-columns:1fr}
-  .bc-1,.bc-2,.bc-3,.bc-4,.bc-5,.bc-6,.bc-7{grid-column:span 1}
-  .proof-avatars{display:none}
+  .pgrid{grid-template-columns:1fr}
+  .bg{grid-template-columns:1fr}
+  .c7,.c5,.c4{grid-column:span 1}
+  .hstat{padding:0 20px}
+  nav{top:12px;width:calc(100% - 24px);padding:0 8px 0 18px}
+  .nav-link{display:none}
 }
 </style>
 </head>
 <body>
 
-<!-- CURSOR -->
-<div id="cursor"></div>
-<div id="cursor-ring"></div>
+<!-- WA FAB -->
+<a href="https://wa.me/5562985794489?text=Ol%C3%A1!%20Quero%20conhecer%20o%20ShowOZ." target="_blank" class="wafab" aria-label="WhatsApp"><svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
 
 <!-- AURORA -->
-<div class="aurora"><div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div></div>
+<div class="aurora"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
 
-<!-- WA FAB -->
-<a href="https://wa.me/5562985794489?text=Ol%C3%A1!%20Quero%20conhecer%20o%20ShowOZ." target="_blank" class="wa-fab" aria-label="WhatsApp">
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-</a>
-
-<!-- NAV -->
+<!-- NAV PILL -->
 <nav id="nav">
-  <div class="logo">Show<em>OZ</em></div>
-  <div class="nav-pill">
-    <a href="#solucao" class="nav-link">Solução</a>
+  <div class="logo">ShowOZ</div>
+  <div class="nav-r">
+    <a href="#solution" class="nav-link">Funcionalidades</a>
     <a href="#sobre" class="nav-link">Sobre</a>
-    <a href="https://wa.me/5562985794489?text=Quero%20uma%20demo%20do%20ShowOZ" target="_blank" class="nav-cta">
+    <a href="https://wa.me/5562985794489?text=Quero%20uma%20demo%20do%20ShowOZ" target="_blank" class="btn-nav">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       Falar agora
     </a>
@@ -252,145 +245,130 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:cl
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-grid-bg"></div>
-  <div class="hero-eyebrow">
-    <div class="hero-eyebrow-dot"></div>
-    Sistema operacional do mercado artístico brasileiro
+  <div class="hero-grid"></div>
+  <div class="badge">
+    <div class="badge-dot"></div>
+    Sistema operacional do mercado artístico
   </div>
   <h1>
-    Para quem gerencia
-    <span class="line2">artistas de verdade.</span>
+    Gestão de shows.<br>
+    <span class="grad-text">Sem caos.</span>
   </h1>
-  <p class="hero-sub">Se você cuida da carreira de artistas como <strong>Alok, Bhaskar</strong> ou qualquer nome que lota arena — sua assessoria precisa de um sistema à altura do talento que você representa.</p>
+  <p class="hero-sub">Do primeiro pedido até o financeiro finalizado — cada etapa controlada, cada centavo rastreado. Feito para quem gerencia os maiores artistas do Brasil.</p>
   <div class="hero-actions">
-    <a href="https://wa.me/5562985794489?text=Quero%20uma%20demo%20do%20ShowOZ" target="_blank" class="btn-primary">
+    <a href="https://wa.me/5562985794489?text=Quero%20uma%20demo%20do%20ShowOZ" target="_blank" class="btn-main">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       Quero uma demonstração
     </a>
-    <a href="#sobre" class="btn-secondary">Como funciona <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></a>
+    <a href="#solution" class="btn-ghost">Ver funcionalidades</a>
   </div>
-  <div class="hero-proof">
-    <div class="proof-avatars">
-      <div class="proof-avatar" style="background:linear-gradient(135deg,#22c55e,#16a34a)">K</div>
-      <div class="proof-avatar" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)">A</div>
-      <div class="proof-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706)">M</div>
-      <div class="proof-avatar" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)">R</div>
-    </div>
-    <div class="proof-text"><strong>+87 assessorias</strong> já gerenciam seus shows no ShowOZ</div>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-n" id="h1">1.240+</div><div class="hstat-l">Shows gerenciados</div></div>
+    <div class="hstat"><div class="hstat-n" id="h2">87+</div><div class="hstat-l">Assessorias ativas</div></div>
+    <div class="hstat"><div class="hstat-n">R$ 48M+</div><div class="hstat-l">Em cachês controlados</div></div>
   </div>
 </section>
 
 <!-- MARQUEE -->
-<div class="marquee-section">
-  <div class="marquee-fade-l"></div>
-  <div class="marquee-fade-r"></div>
-  <div class="marquee-track" id="marquee"></div>
-</div>
+<div class="mq"><div class="mq-track" id="mq"></div></div>
 
 <!-- PROBLEM -->
 <section class="problem" id="sobre">
-  <div class="problem-inner">
-    <div class="problem-header reveal">
+  <div class="inner">
+    <div class="problem-top r">
       <div>
-        <div class="label"><span class="label-line"></span>O problema real</div>
-        <h2>Você gerencia shows de <span class="red">R$ 500 mil</span> com ferramentas de <span class="red">R$ 0.</span></h2>
+        <div class="eyebrow"><span class="eyebrow-line"></span>O problema real</div>
+        <h2>Shows de <span class="red">R$ 500 mil.</span><br>Gestão de <span class="red">R$ 0.</span></h2>
       </div>
-      <div class="problem-desc">Planilha no Google Drive. Financeiro no WhatsApp. Contrato perdido no e-mail. Enquanto o cachê do artista cresce, o caos operacional também cresce junto.</div>
+      <div class="problem-right">Planilha no Drive. Financeiro no WhatsApp. Contrato no e-mail de alguém que saiu da empresa. Enquanto os cachês crescem, o caos cresce junto.</div>
     </div>
-    <div class="pain-grid reveal">
-      <div class="pain-card"><div class="pain-num">01</div><span class="pain-icon">😵</span><div class="pain-title">A planilha que ninguém sabe qual é a certa</div><div class="pain-desc">"Shows 2024 FINAL v3 agora vai.xlsx" — alguém nessa sala conhece essa história.</div></div>
-      <div class="pain-card"><div class="pain-num">02</div><span class="pain-icon">💸</span><div class="pain-title">Parcelas vencendo sem ninguém saber</div><div class="pain-desc">R$ 30k em cachês pendentes porque a informação estava no WhatsApp de alguém que saiu.</div></div>
-      <div class="pain-card"><div class="pain-num">03</div><span class="pain-icon">📱</span><div class="pain-title">WhatsApp como sistema de gestão</div><div class="pain-desc">300 mensagens por dia. Informação perdida. Equipe desalinhada. Todo. Dia.</div></div>
-      <div class="pain-card"><div class="pain-num">04</div><span class="pain-icon">📋</span><div class="pain-title">Contrato no e-mail... de qual conta?</div><div class="pain-desc">O contrato tá num lugar, o rider em outro, e a NF ninguém sabe onde está.</div></div>
-      <div class="pain-card"><div class="pain-num">05</div><span class="pain-icon">🤷</span><div class="pain-title">Equipe de estrada no escuro</div><div class="pain-desc">Cada pessoa com uma versão da informação. Ninguém tem o mesmo roteiro.</div></div>
-      <div class="pain-card"><div class="pain-num">06</div><span class="pain-icon">❓</span><div class="pain-title">Como vai o financeiro do artista?</div><div class="pain-desc">Não dá pra responder em menos de 30 minutos. Isso custa credibilidade.</div></div>
+    <div class="pgrid r">
+      <div class="pc"><div class="pc-n">01</div><span class="pc-ico">😵</span><div class="pc-t">A planilha que ninguém sabe qual é a certa</div><div class="pc-d">"Shows 2024 FINAL v3 agora vai.xlsx" — todo mundo conhece essa história.</div></div>
+      <div class="pc"><div class="pc-n">02</div><span class="pc-ico">💸</span><div class="pc-t">Parcelas vencendo sem ninguém saber</div><div class="pc-d">R$ 30k pendente porque a info estava no WhatsApp de alguém que saiu.</div></div>
+      <div class="pc"><div class="pc-n">03</div><span class="pc-ico">📱</span><div class="pc-t">WhatsApp como sistema de gestão</div><div class="pc-d">300 mensagens por dia. Informação perdida. Equipe perdida. Todo dia.</div></div>
+      <div class="pc"><div class="pc-n">04</div><span class="pc-ico">📋</span><div class="pc-t">Contrato no e-mail... de qual conta?</div><div class="pc-d">Rider em um lugar, NF em outro, contrato em nenhum.</div></div>
+      <div class="pc"><div class="pc-n">05</div><span class="pc-ico">🤷</span><div class="pc-t">Equipe de estrada no escuro</div><div class="pc-d">Cada pessoa com uma versão da informação. Ninguém no mesmo roteiro.</div></div>
+      <div class="pc"><div class="pc-n">06</div><span class="pc-ico">❓</span><div class="pc-t">Como vai o financeiro do artista?</div><div class="pc-d">Não dá para responder em menos de 30 minutos. Isso custa credibilidade.</div></div>
     </div>
   </div>
 </section>
 
 <!-- BENTO -->
-<section class="bento" id="solucao">
-  <div class="bento-inner">
-    <div class="bento-header reveal">
-      <div class="label" style="justify-content:center"><span class="label-line"></span>A solução<span class="label-line"></span></div>
-      <h2>Tudo que sua assessoria precisa,<br>em um único lugar.</h2>
-      <p>Do primeiro pedido de show até o financeiro finalizado — cada etapa controlada, cada centavo rastreado.</p>
+<section class="bento" id="solution">
+  <div class="inner">
+    <div class="bento-head r">
+      <div class="eyebrow" style="justify-content:center"><span class="eyebrow-line"></span>A solução</div>
+      <h2>Tudo que você precisa.<br><em>Em um único lugar.</em></h2>
+      <p>Do primeiro pedido ao financeiro finalizado — cada etapa controlada, cada centavo rastreado.</p>
     </div>
-    <div class="bento-grid">
+    <div class="bg">
 
-      <!-- Pipeline - large -->
-      <div class="bc bc-1 reveal">
-        <div class="bc-icon">🎭</div>
-        <div class="bc-label">Pipeline</div>
-        <h3>Do pedido ao palco, tudo rastreado</h3>
-        <p>Cada show percorre uma jornada. Saiba exatamente onde cada um está em tempo real.</p>
-        <div class="bc-pipeline">
-          <div class="stage"><span class="stage-dot" style="background:#64748b"></span><span class="stage-name">Negociação</span><span class="stage-count">3 shows</span></div>
-          <div class="stage"><span class="stage-dot" style="background:#3b82f6"></span><span class="stage-name">Contrato enviado</span><span class="stage-count">5 shows</span></div>
-          <div class="stage"><span class="stage-dot" style="background:#22c55e"></span><span class="stage-name">Show fechado</span><span class="stage-count">12 shows</span></div>
-          <div class="stage"><span class="stage-dot" style="background:#f59e0b"></span><span class="stage-name">Pré-produção</span><span class="stage-count">4 shows</span></div>
+      <div class="bc c7 r">
+        <div class="bc-ico">🎭</div>
+        <div class="bc-lbl">Pipeline</div>
+        <h3>Do pedido ao palco, rastreado</h3>
+        <p>Visualize onde cada show está em tempo real. Toda equipe alinhada, sem WhatsApp.</p>
+        <div class="pipe-list">
+          <div class="pipe-row"><span class="pipe-dot" style="background:#64748b"></span><span class="pipe-name">Negociação</span><span class="pipe-tag">3 shows</span></div>
+          <div class="pipe-row"><span class="pipe-dot" style="background:#6366f1"></span><span class="pipe-name">Contrato enviado</span><span class="pipe-tag">5 shows</span></div>
+          <div class="pipe-row"><span class="pipe-dot" style="background:#a855f7"></span><span class="pipe-name">Show fechado</span><span class="pipe-tag">12 shows</span></div>
+          <div class="pipe-row"><span class="pipe-dot" style="background:#22c55e"></span><span class="pipe-name">Realizado</span><span class="pipe-tag">47 shows</span></div>
         </div>
       </div>
 
-      <!-- Finance - medium -->
-      <div class="bc bc-2 reveal reveal-delay-1">
-        <div class="bc-icon">💰</div>
-        <div class="bc-label">Financeiro</div>
+      <div class="bc c5 r d1">
+        <div class="bc-ico">💰</div>
+        <div class="bc-lbl">Financeiro</div>
         <h3>Cachês e parcelas sob controle</h3>
         <p>Alertas automáticos de vencimento. Nunca mais perca dinheiro por falta de controle.</p>
-        <div class="bc-finance-bars">
-          <div class="bar-row"><span class="bar-label">Recebido</span><div class="bar-track"><div class="bar-fill" style="width:72%;background:linear-gradient(90deg,#22c55e,#4ade80)"></div></div><span class="bar-val">72%</span></div>
-          <div class="bar-row"><span class="bar-label">Pendente</span><div class="bar-track"><div class="bar-fill" style="width:20%;background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div></div><span class="bar-val">20%</span></div>
-          <div class="bar-row"><span class="bar-label">Vencido</span><div class="bar-track"><div class="bar-fill" style="width:8%;background:linear-gradient(90deg,#ef4444,#f87171)"></div></div><span class="bar-val">8%</span></div>
+        <div class="bars">
+          <div class="bar-r"><span class="bar-l">Recebido</span><div class="bar-t"><div class="bar-f bfill" data-w="72"></div></div><span class="bar-v">72%</span></div>
+          <div class="bar-r"><span class="bar-l">Pendente</span><div class="bar-t"><div class="bar-f bfill" data-w="20" style="background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div></div><span class="bar-v">20%</span></div>
+          <div class="bar-r"><span class="bar-l">Vencido</span><div class="bar-t"><div class="bar-f bfill" data-w="8" style="background:linear-gradient(90deg,#ef4444,#f87171)"></div></div><span class="bar-v">8%</span></div>
         </div>
       </div>
 
-      <!-- Stat 1 -->
-      <div class="bc bc-3 reveal">
-        <div class="bc-icon">📊</div>
-        <div class="bc-label">Plataforma</div>
+      <div class="bc c5 r">
+        <div class="bc-ico">📊</div>
+        <div class="bc-lbl">Plataforma</div>
         <h3>Shows gerenciados</h3>
-        <div class="bc-stat-num" id="s1">0</div>
-        <div class="bc-stat-sub">e crescendo todo mês</div>
+        <div class="bc-num" id="s1">0</div>
+        <div class="bc-sub">e crescendo todo mês</div>
       </div>
 
-      <!-- Equipe -->
-      <div class="bc bc-4 reveal reveal-delay-1">
-        <div class="bc-icon">👥</div>
-        <div class="bc-label">Equipe</div>
+      <div class="bc c7 r d1">
+        <div class="bc-ico">👥</div>
+        <div class="bc-lbl">Equipe</div>
         <h3>Cada cargo com sua visão</h3>
-        <p>Admin, comercial, financeiro, produção, jurídico, estrada. Permissões granulares por função. Ninguém vê o que não precisa ver — e todo mundo vê o que precisa.</p>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:24px">
-          <span style="font-size:12px;padding:5px 14px;border-radius:100px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:#4ade80">Admin</span>
-          <span style="font-size:12px;padding:5px 14px;border-radius:100px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);color:#60a5fa">Comercial</span>
-          <span style="font-size:12px;padding:5px 14px;border-radius:100px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);color:#fbbf24">Financeiro</span>
-          <span style="font-size:12px;padding:5px 14px;border-radius:100px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);color:#a78bfa">Jurídico</span>
-          <span style="font-size:12px;padding:5px 14px;border-radius:100px;background:rgba(236,72,153,.1);border:1px solid rgba(236,72,153,.2);color:#f472b6">Produção</span>
-          <span style="font-size:12px;padding:5px 14px;border-radius:100px;background:rgba(20,184,166,.1);border:1px solid rgba(20,184,166,.2);color:#2dd4bf">Estrada</span>
+        <p>Admin, comercial, financeiro, produção, jurídico, estrada — permissões granulares. Ninguém vê o que não precisa.</p>
+        <div class="tags">
+          <span class="tag" style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);color:#4ade80">Admin</span>
+          <span class="tag" style="background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);color:#818cf8">Comercial</span>
+          <span class="tag" style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);color:#fbbf24">Financeiro</span>
+          <span class="tag" style="background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);color:#c084fc">Jurídico</span>
+          <span class="tag" style="background:rgba(236,72,153,.08);border:1px solid rgba(236,72,153,.2);color:#f472b6">Produção</span>
+          <span class="tag" style="background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.2);color:#34d399">Estrada</span>
         </div>
       </div>
 
-      <!-- Stat 2 -->
-      <div class="bc bc-5 reveal">
-        <div class="bc-icon">🏢</div>
-        <div class="bc-label">Assessorias</div>
-        <h3>Ativas</h3>
-        <div class="bc-stat-num" id="s2">0</div>
-        <div class="bc-stat-sub">em todo o Brasil</div>
-      </div>
-
-      <!-- Calendar -->
-      <div class="bc bc-6 reveal reveal-delay-1">
-        <div class="bc-icon">📅</div>
-        <div class="bc-label">Calendário</div>
+      <div class="bc c4 r">
+        <div class="bc-ico">📅</div>
+        <div class="bc-lbl">Calendário</div>
         <h3>Operacional integrado</h3>
-        <p>Shows e tarefas no mesmo lugar. Sua equipe sabe o que fazer em cada dia.</p>
+        <p>Shows e tarefas no mesmo lugar. Sua equipe sabe exatamente o que fazer em cada dia.</p>
       </div>
 
-      <!-- AI -->
-      <div class="bc bc-7 reveal reveal-delay-2" style="background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(74,222,128,.04));border-color:rgba(34,197,94,.2)">
-        <div class="bc-icon" style="background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.3)">🤖</div>
-        <div class="bc-label">IA Copilot</div>
+      <div class="bc c4 r d1">
+        <div class="bc-ico">🏢</div>
+        <div class="bc-lbl">Assessorias</div>
+        <h3>Ativas no Brasil</h3>
+        <div class="bc-num" id="s2">0</div>
+        <div class="bc-sub">confiando no ShowOZ</div>
+      </div>
+
+      <div class="bc c4 r d2" style="background:linear-gradient(135deg,rgba(168,85,247,.07),rgba(34,197,94,.04));border-color:rgba(168,85,247,.2)">
+        <div class="bc-ico" style="background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(34,197,94,.1));border-color:rgba(168,85,247,.3)">🤖</div>
+        <div class="bc-lbl">IA Copilot</div>
         <h3>Inteligência artificial</h3>
         <p>Alertas preditivos e insights automáticos sobre sua operação.</p>
       </div>
@@ -400,17 +378,14 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:cl
 </section>
 
 <!-- QUOTE -->
-<section class="quote-sec">
-  <div class="quote-glow"></div>
-  <div class="quote-inner reveal">
-    <span class="quote-mark">"</span>
-    <blockquote>Antes do ShowOZ eu tinha medo de responder <em>'como vai o financeiro do artista?'</em>. Hoje abro o sistema e tenho a resposta em <em>10 segundos.</em></blockquote>
-    <div class="q-author">
+<section class="quote">
+  <div class="q-glow"></div>
+  <div class="q-inner r">
+    <span class="q-mark">"</span>
+    <blockquote>Antes eu tinha medo de responder <em>'como vai o financeiro?'</em>. Hoje abro o ShowOZ e tenho a resposta em <em>10 segundos.</em></blockquote>
+    <div class="q-who">
       <div class="q-av">K</div>
-      <div>
-        <div class="q-name">Kaio</div>
-        <div class="q-role">CEO — ShowOZ · Assessor artístico</div>
-      </div>
+      <div><div class="q-n">Kaio</div><div class="q-r">CEO — ShowOZ · Assessor artístico</div></div>
     </div>
   </div>
 </section>
@@ -418,102 +393,93 @@ footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:cl
 <!-- COMPARE -->
 <section class="compare">
   <div class="compare-inner">
-    <div class="compare-header reveal">
-      <div class="label" style="justify-content:center"><span class="label-line"></span>A diferença<span class="label-line"></span></div>
-      <h2>Antes e depois do ShowOZ.</h2>
+    <div class="r">
+      <div class="eyebrow" style="justify-content:center"><span class="eyebrow-line"></span>A diferença</div>
+      <h2>Antes e depois.</h2>
     </div>
-    <div class="compare-grid reveal">
-      <div class="col-bad">
-        <div class="col-title bad"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg> Sem o ShowOZ</div>
-        <div class="ci"><span class="ci-x">✕</span><span class="ci-text-bad">Planilha como sistema de gestão</span></div>
-        <div class="ci"><span class="ci-x">✕</span><span class="ci-text-bad">WhatsApp como CRM</span></div>
-        <div class="ci"><span class="ci-x">✕</span><span class="ci-text-bad">Parcelas no "achismo"</span></div>
-        <div class="ci"><span class="ci-x">✕</span><span class="ci-text-bad">Equipe sem alinhamento</span></div>
-        <div class="ci"><span class="ci-x">✕</span><span class="ci-text-bad">Relatório inexistente</span></div>
-        <div class="ci"><span class="ci-x">✕</span><span class="ci-text-bad">Decisões no improviso</span></div>
+    <div class="cgrid r">
+      <div class="col b">
+        <div class="col-h bad">✕ &nbsp;Sem o ShowOZ</div>
+        <div class="ci"><span class="cx">✕</span><span class="tb">Planilha como sistema de gestão</span></div>
+        <div class="ci"><span class="cx">✕</span><span class="tb">WhatsApp como CRM</span></div>
+        <div class="ci"><span class="cx">✕</span><span class="tb">Parcelas no "achismo"</span></div>
+        <div class="ci"><span class="cx">✕</span><span class="tb">Equipe sem alinhamento</span></div>
+        <div class="ci"><span class="cx">✕</span><span class="tb">Relatório inexistente</span></div>
+        <div class="ci"><span class="cx">✕</span><span class="tb">Decisões no improviso</span></div>
       </div>
-      <div class="col-good">
-        <div class="col-title good"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg> Com o ShowOZ</div>
-        <div class="ci"><span class="ci-ok">✓</span><span class="ci-text-good">Pipeline visual de todos os shows</span></div>
-        <div class="ci"><span class="ci-ok">✓</span><span class="ci-text-good">Toda equipe no mesmo lugar</span></div>
-        <div class="ci"><span class="ci-ok">✓</span><span class="ci-text-good">Financeiro rastreado em tempo real</span></div>
-        <div class="ci"><span class="ci-ok">✓</span><span class="ci-text-good">Cada cargo com sua visão</span></div>
-        <div class="ci"><span class="ci-ok">✓</span><span class="ci-text-good">Relatórios com um clique</span></div>
-        <div class="ci"><span class="ci-ok">✓</span><span class="ci-text-good">Decisões baseadas em dados</span></div>
+      <div class="col g">
+        <div class="col-h good">✓ &nbsp;Com o ShowOZ</div>
+        <div class="ci"><span class="ck">✓</span><span class="tg">Pipeline visual de todos os shows</span></div>
+        <div class="ci"><span class="ck">✓</span><span class="tg">Toda equipe no mesmo lugar</span></div>
+        <div class="ci"><span class="ck">✓</span><span class="tg">Financeiro rastreado em tempo real</span></div>
+        <div class="ci"><span class="ck">✓</span><span class="tg">Cada cargo com sua visão</span></div>
+        <div class="ci"><span class="ck">✓</span><span class="tg">Relatórios com um clique</span></div>
+        <div class="ci"><span class="ck">✓</span><span class="tg">Decisões baseadas em dados</span></div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- CTA FINAL -->
-<section class="final-cta">
-  <div class="cta-aurora"></div>
-  <div class="final-cta-inner reveal">
-    <div class="label" style="justify-content:center;margin-bottom:32px"><span class="label-line"></span>Pronto para mudar de nível?<span class="label-line"></span></div>
-    <h2>Sua assessoria merece um <span>sistema de verdade.</span></h2>
-    <p>Fale com a gente. Demo personalizada, sem burocracia. Vamos entender sua operação e mostrar exatamente como o ShowOZ se encaixa.</p>
-    <a href="https://wa.me/5562985794489?text=Quero%20uma%20demo%20do%20ShowOZ" target="_blank" class="btn-primary" style="font-size:18px;padding:22px 56px;margin:0 auto">
+<section class="cta">
+  <div class="cta-bg"></div>
+  <div class="cta-inner r">
+    <div class="eyebrow" style="justify-content:center;margin-bottom:28px"><span class="eyebrow-line"></span>Pronto para mudar de nível?</div>
+    <h2>Sua assessoria<br>merece <span>muito mais.</span></h2>
+    <p>Demo personalizada, sem burocracia. Mostre-nos sua operação e vamos mostrar como o ShowOZ transforma seu dia a dia.</p>
+    <a href="https://wa.me/5562985794489?text=Quero%20uma%20demo%20do%20ShowOZ" target="_blank" class="btn-main" style="font-size:17px;padding:20px 52px;margin:0 auto;animation:wap 3s ease infinite">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       Quero minha demonstração gratuita
     </a>
-    <p class="cta-note"><span>Demo gratuita</span> · <span>Sem compromisso</span> · <span>Resposta em até 2h</span></p>
+    <p class="cta-note"><b>Demo gratuita</b> · <b>Sem compromisso</b> · <b>Resposta em até 2h</b></p>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">Show<em>OZ</em></div>
-  <div class="footer-copy">© 2025 ShowOZ · O sistema do mercado artístico brasileiro</div>
-  <div class="footer-links">
-    <a href="https://wa.me/5562985794489" target="_blank" class="footer-link wa">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      (62) 98579-4489
-    </a>
-    <a href="mailto:contato@showoz.com.br" class="footer-link">contato@showoz.com.br</a>
+  <div class="flogo">ShowOZ</div>
+  <div class="fcopy">© 2025 ShowOZ · O sistema do mercado artístico brasileiro</div>
+  <div class="flinks">
+    <a href="https://wa.me/5562985794489" target="_blank" class="flink wa"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>(62) 98579-4489</a>
+    <a href="mailto:contato@showoz.com.br" class="flink">contato@showoz.com.br</a>
   </div>
 </footer>
 
 <script>
-/* ─── CURSOR ─────────────────────────────────────── */
-const cur = document.getElementById('cursor');
-const ring = document.getElementById('cursor-ring');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
-(function lerp(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(lerp)})();
-document.querySelectorAll('a,button,.bc,.pain-card').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{cur.style.width='14px';cur.style.height='14px';ring.style.width='52px';ring.style.height='52px';ring.style.borderColor='rgba(34,197,94,.6)'});
-  el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px';ring.style.width='36px';ring.style.height='36px';ring.style.borderColor='rgba(34,197,94,.4)'});
-});
+/* NAV */
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('solid',scrollY>80));
 
-/* ─── NAV ─────────────────────────────────────────── */
-window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('solid',scrollY>60));
+/* MARQUEE */
+const artists=['Alok','Bhaskar','Gusttavo Lima','Simone & Simaria','Wesley Safadão','Xand Avião','Léo Santana','Anitta','Dennis DJ','Zé Vaqueiro','Henrique & Juliano','Luan Santana','Raça Negra','Maiara & Maraisa'];
+document.getElementById('mq').innerHTML=[...artists,...artists].map(a=>`<span class="mq-item"><span class="mq-dot"></span>${a}</span>`).join('');
 
-/* ─── MARQUEE ─────────────────────────────────────── */
-const artists=['Alok','Bhaskar','Gusttavo Lima','Simone & Simaria','Maiara & Maraisa','Wesley Safadão','Xand Avião','Léo Santana','Anitta','Dennis DJ','Zé Vaqueiro','Henrique & Juliano','Luan Santana','Marília Mendonça Tribute','Raça Negra'];
-const t=document.getElementById('marquee');
-t.innerHTML=[...artists,...artists].map(a=>`<span class="marquee-item"><span class="marquee-sep"></span>${a}</span>`).join('');
+/* REVEAL */
+const ro=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add('v')),{threshold:.1});
+document.querySelectorAll('.r').forEach(el=>ro.observe(el));
 
-/* ─── REVEAL ─────────────────────────────────────── */
-const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.12});
-document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+/* BARS (animate on reveal) */
+const bro=new IntersectionObserver(([e])=>{
+  if(!e.isIntersecting)return;
+  document.querySelectorAll('.bfill').forEach(b=>{b.style.width=(b.dataset.w||0)+'%'});
+  bro.disconnect();
+},{threshold:.3});
+bro.observe(document.querySelector('.bars'));
 
-/* ─── COUNTERS ───────────────────────────────────── */
+/* COUNTERS */
 let counted=false;
-const cobs=new IntersectionObserver(([e])=>{
+const co=new IntersectionObserver(([e])=>{
   if(!e.isIntersecting||counted)return;
   counted=true;
   const run=(id,target,suffix='')=>{
-    let s=0;const steps=60,dur=2000;
-    const tick=setInterval(()=>{
-      s++;const p=1-Math.pow(1-s/steps,3);
-      document.getElementById(id).textContent=Math.round(target*p).toLocaleString('pt-BR')+suffix;
-      if(s>=steps)clearInterval(tick);
-    },dur/steps);
+    let s=0;const steps=70,dur=2200;
+    const tick=setInterval(()=>{s++;const p=1-Math.pow(1-s/steps,3);document.getElementById(id).textContent=Math.round(target*p).toLocaleString('pt-BR')+suffix;if(s>=steps)clearInterval(tick)},dur/steps);
   };
   run('s1',1240,'+');
   run('s2',87,'+');
-},{threshold:.3});
-cobs.observe(document.querySelector('.bento'));
+  run('h1',1240,'+');
+  run('h2',87,'+');
+},{threshold:.2});
+co.observe(document.querySelector('.bento'));
 </script>
 </body>
 </html>
